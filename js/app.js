@@ -5,8 +5,9 @@
 // =====================================================
 
 // ffmpeg.wasm 0.11.x — stable API, works as UMD global
-const FFMPEG_JS_URL   = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
-const FFMPEG_CORE_URL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js';
+const FFMPEG_JS_URL          = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
+const FFMPEG_CORE_URL_MT     = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js';
+const FFMPEG_CORE_URL_SINGLE = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js';
 
 let ffmpeg = null;
 let ffmpegLoaded = false;
@@ -355,12 +356,20 @@ function renderCropBox() {
   updateCropInputs(); updateCropSummary();
 }
 
+// Helper: extract clientX/clientY from either a mouse or touch event
+function getPointer(e) {
+  if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  if (e.changedTouches && e.changedTouches.length) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+  return { x: e.clientX, y: e.clientY };
+}
+
 // Crop box drag
-cropBoxEl.addEventListener('mousedown', e => {
+function startCropBoxDrag(e) {
   if (e.target !== cropBoxEl && !e.target.classList.contains('crop-crosshair') &&
       !e.target.classList.contains('crop-rule-v') && !e.target.classList.contains('crop-rule-h')) return;
   e.preventDefault();
-  const sx = e.clientX, sy = e.clientY, ox = cropBox.x, oy = cropBox.y;
+  const p0 = getPointer(e);
+  const ox = cropBox.x, oy = cropBox.y;
   const vw = videoPlayer.videoWidth || 1920, vh = videoPlayer.videoHeight || 1080;
   const wrap = document.getElementById('videoWrap');
   const dw = wrap.offsetWidth, dh = wrap.offsetHeight;
@@ -370,21 +379,33 @@ cropBoxEl.addEventListener('mousedown', e => {
   else                  { renderH = dh; renderW = dh * videoAR; }
   const scaleX = vw / renderW, scaleY = vh / renderH;
   const move = ev => {
-    cropBox.x = Math.max(0, Math.min(vw - cropBox.w, ox + (ev.clientX - sx) * scaleX));
-    cropBox.y = Math.max(0, Math.min(vh - cropBox.h, oy + (ev.clientY - sy) * scaleY));
+    ev.preventDefault();
+    const p = getPointer(ev);
+    cropBox.x = Math.max(0, Math.min(vw - cropBox.w, ox + (p.x - p0.x) * scaleX));
+    cropBox.y = Math.max(0, Math.min(vh - cropBox.h, oy + (p.y - p0.y) * scaleY));
     renderCropBox();
   };
-  const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+  const up = () => {
+    window.removeEventListener('mousemove', move);
+    window.removeEventListener('mouseup', up);
+    window.removeEventListener('touchmove', move);
+    window.removeEventListener('touchend', up);
+  };
   window.addEventListener('mousemove', move);
   window.addEventListener('mouseup', up);
-});
+  window.addEventListener('touchmove', move, { passive: false });
+  window.addEventListener('touchend', up);
+}
+cropBoxEl.addEventListener('mousedown', startCropBoxDrag);
+cropBoxEl.addEventListener('touchstart', startCropBoxDrag, { passive: false });
 
 // Resize handles
 document.querySelectorAll('.crop-handle').forEach(handle => {
-  handle.addEventListener('mousedown', e => {
+  function startHandleDrag(e) {
     e.preventDefault(); e.stopPropagation();
     const h = handle.dataset.handle;
-    const sx = e.clientX, sy = e.clientY, orig = { ...cropBox };
+    const p0 = getPointer(e);
+    const orig = { ...cropBox };
     const vw = videoPlayer.videoWidth || 1920, vh = videoPlayer.videoHeight || 1080;
     const wrap = document.getElementById('videoWrap');
     const dw = wrap.offsetWidth, dh = wrap.offsetHeight;
@@ -396,9 +417,10 @@ document.querySelectorAll('.crop-handle').forEach(handle => {
     const [rw, rh] = cropRatio !== 'free' ? cropRatio.split(':').map(Number) : [0, 0];
 
     const move = ev => {
-      const dx = (ev.clientX - sx) * scaleX;
-      const dy = (ev.clientY - sy) * scaleY;
-      let { x, y, w, width2 } = orig;
+      ev.preventDefault();
+      const p = getPointer(ev);
+      const dx = (p.x - p0.x) * scaleX;
+      const dy = (p.y - p0.y) * scaleY;
       let nw = orig.w, nh = orig.h, nx = orig.x, ny = orig.y;
       if (h.includes('l')) { nx = orig.x + dx; nw = orig.w - dx; }
       if (h.includes('r') || h === 'rc') { nw = orig.w + dx; }
@@ -411,10 +433,19 @@ document.querySelectorAll('.crop-handle').forEach(handle => {
       cropBox = { x: nx, y: ny, w: nw, h: nh };
       renderCropBox();
     };
-    const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      window.removeEventListener('touchmove', move);
+      window.removeEventListener('touchend', up);
+    };
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
-  });
+    window.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', up);
+  }
+  handle.addEventListener('mousedown', startHandleDrag);
+  handle.addEventListener('touchstart', startHandleDrag, { passive: false });
 });
 
 window.addEventListener('resize', () => { if (cropEnabled) renderCropBox(); });
@@ -455,31 +486,64 @@ async function ensureFFmpeg() {
   ffmpegOverlay.classList.remove('hidden');
   setFFmpegStatus('Loading ffmpeg.wasm…', 15);
 
+  // Detect if cross-origin isolation actually succeeded (SharedArrayBuffer usable).
+  // Many in-app browsers (Messenger, Instagram, TikTok webviews) never grant this,
+  // so we transparently fall back to the single-thread core which needs no
+  // SharedArrayBuffer / COOP / COEP headers at all — it just works everywhere.
+  const canUseThreads = typeof SharedArrayBuffer !== 'undefined' && window.crossOriginIsolated === true;
+  const coreURL = canUseThreads ? FFMPEG_CORE_URL_MT : FFMPEG_CORE_URL_SINGLE;
+
   try {
     await loadScript(FFMPEG_JS_URL);
     setFFmpegStatus('Script loaded — initializing…', 40);
 
-    // 0.11.x API: window.FFmpeg.createFFmpeg
     const { createFFmpeg, fetchFile } = window.FFmpeg;
     window._ffmpegFetchFile = fetchFile;
 
     ffmpeg = createFFmpeg({
-      corePath: FFMPEG_CORE_URL,
+      corePath: coreURL,
       log: true,
       logger: ({ message }) => addLog(message),
       progress: ({ ratio }) => {
-        const pct = Math.round(ratio * 100);
+        const pct = Math.round(Math.max(0, Math.min(1, ratio)) * 100);
         progressBar.style.width = pct + '%';
         exportPct.textContent = pct + '%';
       },
     });
 
-    setFFmpegStatus('Loading WebAssembly core…', 60);
+    setFFmpegStatus(canUseThreads ? 'Loading fast engine…' : 'Loading compatible engine…', 60);
     await ffmpeg.load();
     setFFmpegStatus('Engine ready ✓', 100);
     ffmpegLoaded = true;
     await sleep(300);
   } catch (err) {
+    // If the multi-thread core failed for any reason, retry once with the
+    // single-thread core before giving up — covers edge cases where
+    // crossOriginIsolated reports true but the worker still can't init.
+    if (canUseThreads) {
+      addLog('Fast engine unavailable, retrying with compatible engine…');
+      try {
+        const { createFFmpeg } = window.FFmpeg;
+        ffmpeg = createFFmpeg({
+          corePath: FFMPEG_CORE_URL_SINGLE,
+          log: true,
+          logger: ({ message }) => addLog(message),
+          progress: ({ ratio }) => {
+            const pct = Math.round(Math.max(0, Math.min(1, ratio)) * 100);
+            progressBar.style.width = pct + '%';
+            exportPct.textContent = pct + '%';
+          },
+        });
+        await ffmpeg.load();
+        ffmpegLoaded = true;
+        setFFmpegStatus('Engine ready ✓', 100);
+        await sleep(300);
+        return;
+      } catch (err2) {
+        setFFmpegStatus('Failed: ' + err2.message, 0);
+        throw err2;
+      }
+    }
     setFFmpegStatus('Failed: ' + err.message, 0);
     throw err;
   } finally {
