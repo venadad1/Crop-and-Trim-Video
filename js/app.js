@@ -126,8 +126,8 @@ function loadVideo(file) {
     videoDuration = videoPlayer.duration;
     trimStart = 0;
     trimEnd = videoDuration;
-    startInput.value = '0.00';
-    endInput.value = videoDuration.toFixed(2);
+    startInput.value = fmt(0);
+    endInput.value = fmt(videoDuration);
     fileBadge.textContent = file.name;
     uploadSection.classList.add('hidden');
     heroBadge.classList.add('hidden');
@@ -141,8 +141,27 @@ function loadVideo(file) {
 
 // ── PLAYBACK ─────────────────────────────────────────
 function fmt(s) {
-  const m = Math.floor(s / 60);
-  return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+  s = Math.max(0, s || 0);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${sec}`;
+  return `${m}:${sec}`;
+}
+// Parses "MM:SS", "H:MM:SS", or a plain number of seconds back into seconds
+function parseTime(str) {
+  if (str == null) return NaN;
+  str = String(str).trim();
+  if (str === '') return NaN;
+  if (str.includes(':')) {
+    const parts = str.split(':').map(p => parseFloat(p));
+    if (parts.some(isNaN)) return NaN;
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    return NaN;
+  }
+  const n = parseFloat(str);
+  return isNaN(n) ? NaN : n;
 }
 videoPlayer.addEventListener('timeupdate', () => {
   if (!videoDuration) return;
@@ -183,20 +202,29 @@ function updateTrimUI() {
   trimEndThumb.style.left   = e + '%';
   trimRange.style.left  = s + '%';
   trimRange.style.width = (e - s) + '%';
-  trimDuration.textContent  = (trimEnd - trimStart).toFixed(1) + 's';
-  startInput.value = trimStart.toFixed(2);
-  endInput.value   = trimEnd.toFixed(2);
+  trimDuration.textContent  = fmt(trimEnd - trimStart);
+  startInput.value = fmt(trimStart);
+  endInput.value   = fmt(trimEnd);
   updateTrimSummary();
 }
 
-startInput.addEventListener('input', () => {
-  trimStart = clampTrimStart(parseFloat(startInput.value) || 0);
+function commitStartInput() {
+  const parsed = parseTime(startInput.value);
+  trimStart = clampTrimStart(isNaN(parsed) ? trimStart : parsed);
   updateTrimUI();
-});
-endInput.addEventListener('input', () => {
-  trimEnd = clampTrimEnd(parseFloat(endInput.value) || videoDuration);
+}
+function commitEndInput() {
+  const parsed = parseTime(endInput.value);
+  trimEnd = clampTrimEnd(isNaN(parsed) ? trimEnd : parsed);
   updateTrimUI();
-});
+}
+startInput.addEventListener('change', commitStartInput);
+startInput.addEventListener('blur', commitStartInput);
+startInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commitStartInput(); startInput.blur(); } });
+
+endInput.addEventListener('change', commitEndInput);
+endInput.addEventListener('blur', commitEndInput);
+endInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commitEndInput(); endInput.blur(); } });
 
 previewTrimBtn.addEventListener('click', () => {
   videoPlayer.currentTime = trimStart;
@@ -394,7 +422,7 @@ window.addEventListener('resize', () => { if (cropEnabled) renderCropBox(); });
 // ── EXPORT SUMMARY ────────────────────────────────────
 function updateTrimSummary() {
   const full = trimStart < 0.05 && Math.abs(trimEnd - videoDuration) < 0.05;
-  summaryTrim.textContent = full ? 'Full video' : `${trimStart.toFixed(1)}s – ${trimEnd.toFixed(1)}s`;
+  summaryTrim.textContent = full ? 'Full video' : `${fmt(trimStart)} – ${fmt(trimEnd)}`;
   summaryTime.textContent = '~' + Math.max(5, Math.round((trimEnd - trimStart) * 1.5)) + 's';
 }
 function updateCropSummary() {
