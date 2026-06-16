@@ -502,6 +502,10 @@ async function ensureFFmpeg() {
 
     ffmpeg = createFFmpeg({
       corePath: coreURL,
+      // Single-thread core-st exports plain "main", not "proxy_main"
+      // (proxy_main only exists in the PROXY_TO_PTHREAD multi-thread build).
+      // Leaving mainName unset for the multi-thread core keeps its default ("proxy_main").
+      ...(canUseThreads ? {} : { mainName: 'main' }),
       log: true,
       logger: ({ message }) => addLog(message),
       progress: ({ ratio }) => {
@@ -526,6 +530,7 @@ async function ensureFFmpeg() {
         const { createFFmpeg } = window.FFmpeg;
         ffmpeg = createFFmpeg({
           corePath: FFMPEG_CORE_URL_SINGLE,
+          mainName: 'main',
           log: true,
           logger: ({ message }) => addLog(message),
           progress: ({ ratio }) => {
