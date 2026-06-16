@@ -653,7 +653,7 @@ body::after {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   overflow: visible;
-  margin: 4px 0;
+  margin: 4px 10px;
 }
 .trim-range {
   position: absolute;
