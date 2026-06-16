@@ -422,12 +422,71 @@
         <a href="pages/privacy.html">Privacy</a>
         <a href="pages/sitemap.html">Sitemap</a>
       </div>
-      <p class="footer-copy">ClipForge © 2026 — All video processing is done locally in your browser.</p>
-    </div>
-  </footer>
+      <!-- ... sve iznad u footeru ... -->
+    <p class="footer-copy">ClipForge &copy; 2026 - All video processing is done locally in your browser.</p>
+  </div>
+</footer>
 
-  <!-- SW must register first so COOP/COEP headers are active before ffmpeg loads -->
-  <script src="js/sw-register.js"></script>
-  <script src="js/app.js"></script>
+<!-- START: In-App Browser Redirect Banner -->
+<div id="inapp-browser-banner" style="display: none; position: fixed; top: 0; left: 0; width: 100%; background: #ffcc00; color: #111; text-align: center; padding: 12px 15px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; z-index: 999999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); box-sizing: border-box; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;">
+  <span>⚠️ Inside Messenger/Instagram? File processing or download might fail. Open in your regular browser for 100% stable performance.</span>
+  <button id="inapp-open-btn" style="background: #111; color: #fff; border: none; padding: 6px 16px; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Open in Browser</button>
+</div>
+
+<div id="ios-instruction-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999999; color: #fff; font-family: 'DM Sans', sans-serif; padding: 30px; box-sizing: border-box; text-align: center; flex-direction: column; justify-content: center; align-items: center;">
+  <div style="font-size: 50px; margin-bottom: 20px; animation: bounce 2s infinite;">👆</div>
+  <h2 style="font-family: 'Syne', sans-serif; font-size: 24px; margin-bottom: 15px; color: #ffcc00;">Just one more step</h2>
+  <p style="font-size: 16px; max-width: 400px; margin: 0 auto 25px; line-height: 1.5; color: #ddd;">
+    Tap the <strong>three dots (...)</strong> or the <strong>Share icon</strong> in your app's menu (top or bottom corner), then select <strong>'Open in Safari'</strong>.
+  </p>
+  <button id="ios-close-btn" style="background: transparent; border: 2px solid #fff; color: #fff; padding: 8px 24px; font-family: 'DM Mono', monospace; font-size: 13px; border-radius: 4px; cursor: pointer;">Close instruction</button>
+</div>
+
+<style>
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-15px); }
+  60% { transform: translateY(-7px); }
+}
+</style>
+
+<script>
+(function() {
+  const isInApp = /FBAN|FBAV|Instagram|Messenger|TikTok/i.test(navigator.userAgent);
+  if (isInApp) {
+    const banner = document.getElementById('inapp-browser-banner');
+    if (banner) {
+      banner.style.display = 'flex';
+      document.body.style.paddingTop = banner.offsetHeight + 'px';
+    }
+    const openBtn = document.getElementById('inapp-open-btn');
+    if (openBtn) {
+      openBtn.addEventListener('click', function() {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        if (isAndroid) {
+          const cleanUrl = window.location.href.replace(/^https?:\/\//, '');
+          window.location.href = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+        } else {
+          const overlay = document.getElementById('ios-instruction-overlay');
+          if (overlay) overlay.style.display = 'flex';
+        }
+      });
+    }
+    const iosCloseBtn = document.getElementById('ios-close-btn');
+    if (iosCloseBtn) {
+      iosCloseBtn.addEventListener('click', function() {
+        const overlay = document.getElementById('ios-instruction-overlay');
+        if (overlay) overlay.style.display = 'none';
+      });
+    }
+  }
+})();
+</script>
+<!-- END: In-App Browser Redirect Banner -->
+
+<!-- SW must register first so COOP/COEP headers are active before ffmpeg loads -->
+<script src="js/sw-register.js"></script>
+<script src="js/app.js"></script>
+
 </body>
 </html>
