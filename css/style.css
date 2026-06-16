@@ -696,8 +696,9 @@ body::after {
   display: flex;
   gap: 10px;
   align-items: center;
+  min-width: 0;
 }
-.field { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.field { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .field-divider { color: var(--text3); font-size: 14px; flex-shrink: 0; }
 .field-label {
   font-size: 11px;
@@ -716,6 +717,7 @@ body::after {
   border-radius: var(--radius-sm);
   overflow: hidden;
   transition: border-color var(--transition);
+  min-width: 0;
 }
 .time-input-wrap:focus-within, .filename-input-wrap:focus-within {
   border-color: var(--primary);
@@ -740,6 +742,12 @@ body::after {
   display: flex;
   align-items: center;
   background: var(--bg2);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+@media (max-width: 420px) {
+  .time-unit { padding: 0 6px; font-size: 9px; }
+  .time-input { padding: 8px 6px; font-size: 12px; }
 }
 .filename-input { width: 100%; }
 .filename-input-wrap .filename-input { flex: 1; }
