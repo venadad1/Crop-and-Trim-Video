@@ -163,14 +163,23 @@ body::after {
 }
 
 /* ========================
-   HERO BADGE
+   HERO (SEO-rich)
    ======================== */
-.hero-badge-wrap {
-  padding-top: 76px;
+.hero-wrap {
+  padding-top: 84px;
   display: flex;
   justify-content: center;
   position: relative;
   z-index: 1;
+}
+.hero-content {
+  max-width: 760px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px;
 }
 .hero-badge {
   display: inline-flex;
@@ -195,6 +204,113 @@ body::after {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+.hero-h1 {
+  font-size: clamp(28px, 4.5vw, 46px);
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.12;
+}
+.hero-accent-text {
+  background: linear-gradient(90deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 620px;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 4px;
+}
+.hero-pill {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.25);
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+
+/* ========================
+   INFO / SEO CONTENT SECTIONS
+   ======================== */
+.info-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 24px 60px;
+  position: relative;
+  z-index: 1;
+}
+.info-inner { display: flex; flex-direction: column; gap: 56px; }
+.info-block { display: flex; flex-direction: column; gap: 24px; }
+.info-h2 {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 800px) { .steps-grid { grid-template-columns: 1fr; } }
+.step-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+}
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.step-title { font-size: 16px; font-weight: 700; }
+.step-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 800px) { .why-grid { grid-template-columns: 1fr; } }
+.why-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  backdrop-filter: blur(10px);
+}
+.why-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--primary-light);
+}
+.why-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
 
 /* ========================
    MAIN LAYOUT

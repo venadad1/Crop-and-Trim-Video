@@ -3,14 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClipForge — Browser-Based Video Editor</title>
-  <meta name="description" content="ClipForge is a free, browser-based video editor. Trim and crop videos with no uploads, no accounts, no servers — all powered by ffmpeg.wasm." />
+  <title>ClipForge — Free Online Video Editor | Trim & Crop Video, No Watermark, No Limits</title>
+  <meta name="description" content="ClipForge is a 100% free online video editor with no usage limits and no watermark. Trim, cut, and crop MP4, MOV & WEBM videos instantly in your browser — no sign up, no upload to any server, no software install. The fastest free video trimmer and video cropper online." />
+  <meta name="keywords" content="free online video editor, video trimmer online, video cropper online, cut video online free, crop video online, trim video no watermark, browser video editor, no download video editor, free video editor no limits, mp4 trimmer online, vertical video cropper, 9:16 video crop" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://clipforge.app/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://clipforge.app/" />
+  <meta property="og:title" content="ClipForge — Free Online Video Editor (No Watermark, No Limits)" />
+  <meta property="og:description" content="Trim and crop videos online for free, with zero usage limits and no watermark. 100% browser-based — your files never leave your device." />
+  <meta property="og:image" content="https://clipforge.app/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ClipForge — Free Online Video Editor (No Watermark, No Limits)" />
+  <meta name="twitter:description" content="Trim and crop videos online for free, with zero usage limits and no watermark. 100% browser-based — your files never leave your device." />
+  <meta name="twitter:image" content="https://clipforge.app/og-image.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Structured Data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ClipForge",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any (runs in web browser)",
+    "url": "https://clipforge.app/",
+    "description": "ClipForge is a 100% free, browser-based video editor with no usage limits and no watermark. Trim and crop MP4, MOV, and WEBM videos directly in your browser with no uploads to any server.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Free video trimming with no usage limits",
+      "Interactive video cropping with 16:9, 1:1, 9:16 aspect ratio presets",
+      "No watermark on exported videos",
+      "100% browser-based processing — no uploads to a server",
+      "MP4, MOV, and WEBM support",
+      "No account or sign-up required"
+    ]
+  }
+  </script>
 </head>
 <body>
   <!-- NAV -->
@@ -38,11 +79,28 @@
     </div>
   </nav>
 
-  <!-- HERO BADGE -->
-  <div class="hero-badge-wrap" id="heroBadge">
-    <div class="hero-badge">
-      <span class="badge-dot"></span>
-      All processing happens in your browser — your files never leave your device
+  <!-- HERO -->
+  <div class="hero-wrap" id="heroBadge">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        100% free forever — no usage limits, no watermark, no sign-up
+      </div>
+      <h1 class="hero-h1">
+        The Free Online Video Editor that <span class="hero-accent-text">Trims &amp; Crops</span> in Seconds
+      </h1>
+      <p class="hero-sub">
+        ClipForge is a 100% free browser video editor with <strong>zero usage limits</strong> and <strong>no watermark</strong>.
+        Cut, trim, and crop MP4, MOV, and WEBM videos instantly — no software install, no account, and no upload to any server.
+        Everything runs locally in your browser, powered by ffmpeg.wasm.
+      </p>
+      <div class="hero-pills">
+        <span class="hero-pill">✓ 100% Free</span>
+        <span class="hero-pill">✓ No Usage Limits</span>
+        <span class="hero-pill">✓ No Watermark</span>
+        <span class="hero-pill">✓ No Sign-Up</span>
+        <span class="hero-pill">✓ 100% Private</span>
+      </div>
     </div>
   </div>
 
@@ -61,8 +119,8 @@
               <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
             </svg>
           </div>
-          <h1 class="upload-title">Drop your video here</h1>
-          <p class="upload-sub">MP4, MOV, WEBM — up to any size your browser can handle</p>
+          <h2 class="upload-title">Drop Your Video to Start Editing — Free</h2>
+          <p class="upload-sub">MP4, MOV, WEBM — no file size cap, no watermark, no time limit</p>
           <label class="btn btn-primary upload-btn" for="fileInput">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
               <path d="M15 10l-4 4-4-4M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/>
@@ -286,6 +344,56 @@
 
     </section>
   </main>
+
+  <!-- HOW IT WORKS / SEO CONTENT -->
+  <section class="info-section">
+    <div class="info-inner">
+
+      <div class="info-block">
+        <h2 class="info-h2">How to Trim and Crop a Video Online — Free, in 3 Steps</h2>
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-num">1</span>
+            <h3 class="step-title">Upload Your Video</h3>
+            <p class="step-desc">Drag and drop or choose a file. ClipForge supports MP4, MOV, and WEBM — with no upload size limit, because your video never actually leaves your device.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">2</span>
+            <h3 class="step-title">Trim &amp; Crop</h3>
+            <p class="step-desc">Drag the trim handles to set your start and end points, then use the crop tool with 16:9, 1:1, or 9:16 presets to resize for YouTube, Instagram, or TikTok.</p>
+          </div>
+          <div class="step-card">
+            <span class="step-num">3</span>
+            <h3 class="step-title">Export — Free, No Watermark</h3>
+            <p class="step-desc">Click Export and your trimmed, cropped MP4 downloads straight to your device in seconds. No watermark, no account, no usage limit — ever.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <h2 class="info-h2">Why ClipForge is the Best Free Online Video Editor</h2>
+        <div class="why-grid">
+          <div class="why-card">
+            <h3 class="why-title">100% Free, No Usage Limits</h3>
+            <p class="why-desc">Most online video editors cap your exports, add a watermark, or lock features behind a paywall. ClipForge has none of that — unlimited trims, unlimited crops, unlimited exports, completely free.</p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-title">No Upload, No Server, 100% Private</h3>
+            <p class="why-desc">Unlike most video trimmer and video cropper tools online, ClipForge never uploads your file to a server. All processing happens locally in your browser, so your content stays private.</p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-title">No Install, No Sign-Up</h3>
+            <p class="why-desc">Skip the heavy desktop software and account creation. Open ClipForge in any modern browser and start cutting and cropping your video immediately.</p>
+          </div>
+          <div class="why-card">
+            <h3 class="why-title">Perfect for Every Platform</h3>
+            <p class="why-desc">Crop to 9:16 for TikTok and Reels, 1:1 for Instagram posts, or keep 16:9 for YouTube — ClipForge's aspect ratio presets make repurposing video fast and easy.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
 
   <!-- FFMPEG LOADING OVERLAY -->
   <div class="ffmpeg-overlay hidden" id="ffmpegOverlay">
