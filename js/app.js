@@ -4,10 +4,10 @@
 // CDN: jsdelivr (more reliable than unpkg for WASM)
 // =====================================================
 
-// ffmpeg.wasm 0.11.x — stable API, works as UMD global
-const FFMPEG_JS_URL          = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
-const FFMPEG_CORE_URL_MT     = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js';
-const FFMPEG_CORE_URL_SINGLE = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js';
+// ffmpeg.wasm 0.11.x — stable API, works as UMD global. Multi-thread core (fast,
+// requires SharedArrayBuffer via COOP/COEP — provided by sw.js / netlify.toml / vercel.json).
+const FFMPEG_JS_URL      = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
+const FFMPEG_CORE_URL_MT = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js';
 
 let ffmpeg = null;
 let ffmpegLoaded = false;
@@ -25,6 +25,61 @@ const QUALITY_PRESETS = {
   medium: { crf: '23', preset: 'fast' },
   high:   { crf: '18', preset: 'slow' },
 };
+
+// ── IN-APP BROWSER DETECTION ──────────────────────────
+// Messenger, Instagram, Facebook, and TikTok in-app WebViews use a stripped-down
+// rendering engine that frequently throttles or kills Web Workers and WASM memory
+// allocation in the background — which is exactly what ffmpeg.wasm needs to run.
+// Exporting on these can silently hang at 0% forever. We detect them and steer
+// people to open the page in their real browser, where everything works.
+function detectInAppBrowser() {
+  const ua = navigator.userAgent || '';
+  const isFBAN  = /FBAN|FBAV|FB_IAB|FBIOS/i.test(ua);          // Facebook app
+  const isMessenger = /MESSENGER/i.test(ua);                    // Messenger app
+  const isInstagram = /Instagram/i.test(ua);                    // Instagram app
+  const isLine = /\bLine\//i.test(ua);
+  const isTikTok = /BytedanceWebview|TikTok/i.test(ua);
+  const isWeChat = /MicroMessenger/i.test(ua);
+  return isFBAN || isMessenger || isInstagram || isLine || isTikTok || isWeChat;
+}
+
+function showInAppBrowserWarning() {
+  const banner = document.createElement('div');
+  banner.className = 'inapp-warning';
+  banner.innerHTML = `
+    <div class="inapp-warning-inner">
+      <span class="inapp-warning-icon">⚠️</span>
+      <div class="inapp-warning-text">
+        <strong>Heads up:</strong> you're viewing ClipForge inside an app's built-in browser
+        (Messenger, Instagram, etc). Video export can hang or fail here due to that browser's
+        limitations. For a reliable export, open this page in Chrome or Safari.
+      </div>
+      <button class="inapp-warning-btn" id="openInBrowserBtn">Open in Browser</button>
+      <button class="inapp-warning-close" id="closeInAppWarning" aria-label="Dismiss">×</button>
+    </div>
+  `;
+  document.body.insertBefore(banner, document.body.firstChild);
+
+  document.getElementById('closeInAppWarning')?.addEventListener('click', () => banner.remove());
+  document.getElementById('openInBrowserBtn')?.addEventListener('click', () => {
+    const url = window.location.href;
+    const ua = navigator.userAgent || '';
+    if (/android/i.test(ua)) {
+      // Android intent URL forces opening in the default browser (usually Chrome)
+      const intentUrl = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;end`;
+      window.location.href = intentUrl;
+    } else {
+      // iOS in-app browsers generally respect target=_blank / window.open for Safari
+      window.open(url, '_blank');
+    }
+  });
+}
+
+if (detectInAppBrowser()) {
+  // Run after DOM is ready since this script may load before <body> finishes parsing
+  if (document.body) showInAppBrowserWarning();
+  else document.addEventListener('DOMContentLoaded', showInAppBrowserWarning);
+}
 
 // ── DOM REFS ──────────────────────────────────────────
 const uploadZone      = document.getElementById('uploadZone');
@@ -486,13 +541,6 @@ async function ensureFFmpeg() {
   ffmpegOverlay.classList.remove('hidden');
   setFFmpegStatus('Loading ffmpeg.wasm…', 15);
 
-  // Detect if cross-origin isolation actually succeeded (SharedArrayBuffer usable).
-  // Many in-app browsers (Messenger, Instagram, TikTok webviews) never grant this,
-  // so we transparently fall back to the single-thread core which needs no
-  // SharedArrayBuffer / COOP / COEP headers at all — it just works everywhere.
-  const canUseThreads = typeof SharedArrayBuffer !== 'undefined' && window.crossOriginIsolated === true;
-  const coreURL = canUseThreads ? FFMPEG_CORE_URL_MT : FFMPEG_CORE_URL_SINGLE;
-
   try {
     await loadScript(FFMPEG_JS_URL);
     setFFmpegStatus('Script loaded — initializing…', 40);
@@ -501,11 +549,7 @@ async function ensureFFmpeg() {
     window._ffmpegFetchFile = fetchFile;
 
     ffmpeg = createFFmpeg({
-      corePath: coreURL,
-      // Single-thread core-st exports plain "main", not "proxy_main"
-      // (proxy_main only exists in the PROXY_TO_PTHREAD multi-thread build).
-      // Leaving mainName unset for the multi-thread core keeps its default ("proxy_main").
-      ...(canUseThreads ? {} : { mainName: 'main' }),
+      corePath: FFMPEG_CORE_URL_MT,
       log: true,
       logger: ({ message }) => addLog(message),
       progress: ({ ratio }) => {
@@ -515,42 +559,18 @@ async function ensureFFmpeg() {
       },
     });
 
-    setFFmpegStatus(canUseThreads ? 'Loading fast engine…' : 'Loading compatible engine…', 60);
+    setFFmpegStatus('Loading WebAssembly core…', 60);
     await ffmpeg.load();
     setFFmpegStatus('Engine ready ✓', 100);
     ffmpegLoaded = true;
     await sleep(300);
   } catch (err) {
-    // If the multi-thread core failed for any reason, retry once with the
-    // single-thread core before giving up — covers edge cases where
-    // crossOriginIsolated reports true but the worker still can't init.
-    if (canUseThreads) {
-      addLog('Fast engine unavailable, retrying with compatible engine…');
-      try {
-        const { createFFmpeg } = window.FFmpeg;
-        ffmpeg = createFFmpeg({
-          corePath: FFMPEG_CORE_URL_SINGLE,
-          mainName: 'main',
-          log: true,
-          logger: ({ message }) => addLog(message),
-          progress: ({ ratio }) => {
-            const pct = Math.round(Math.max(0, Math.min(1, ratio)) * 100);
-            progressBar.style.width = pct + '%';
-            exportPct.textContent = pct + '%';
-          },
-        });
-        await ffmpeg.load();
-        ffmpegLoaded = true;
-        setFFmpegStatus('Engine ready ✓', 100);
-        await sleep(300);
-        return;
-      } catch (err2) {
-        setFFmpegStatus('Failed: ' + err2.message, 0);
-        throw err2;
-      }
-    }
-    setFFmpegStatus('Failed: ' + err.message, 0);
-    throw err;
+    const needsIsolation = typeof SharedArrayBuffer === 'undefined' || window.crossOriginIsolated !== true;
+    const msg = needsIsolation
+      ? 'This browser blocked the fast video engine. Try reloading the page once, or open ClipForge in Chrome/Safari directly.'
+      : 'Failed: ' + err.message;
+    setFFmpegStatus(msg, 0);
+    throw new Error(msg);
   } finally {
     await sleep(200);
     ffmpegOverlay.classList.add('hidden');
@@ -573,12 +593,25 @@ async function handleExport() {
   progressBar.style.width = '0%';
   exportPct.textContent = '0%';
 
+  // Watchdog: if nothing happens for a while, the page is most likely stuck
+  // inside an in-app browser (Messenger/Instagram/etc.) that throttled the
+  // WASM worker. Tell the user plainly instead of leaving them staring at 0%.
+  let sawProgress = false;
+  const watchdog = setTimeout(() => {
+    if (!sawProgress) {
+      addLog('⚠ Export seems stuck. If you opened this page from Messenger, Instagram, or a similar app, please open it in Chrome or Safari instead — those apps\' built-in browsers often block video processing.', 'error');
+    }
+  }, 12000);
+
   try {
     await ensureFFmpeg();
+    sawProgress = true;
     await runExport();
   } catch (err) {
     addLog('✗ Export failed: ' + err.message, 'error');
     console.error('[ClipForge Export Error]', err);
+  } finally {
+    clearTimeout(watchdog);
   }
   exportBtn.disabled = false;
 }
