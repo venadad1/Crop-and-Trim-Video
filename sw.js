@@ -1,37 +1,35 @@
-// ClipForge Service Worker — injects COOP/COEP ONLY for editor.html and its sub-resources.
-// index.html and everything loaded from it (ad scripts, ad images) are left untouched
-// so Adsterra and other ad networks can load cross-origin resources freely.
+// ClipForge Service Worker
+// Registered ONLY from editor.html — never touches index.html or ad resources.
+// Provides COOP/COEP headers as a fallback when server-side headers aren't set
+// (e.g. incognito on first visit before SW activates, or misconfigured host).
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  const dest = e.request.destination;
 
-  // Only isolate requests that originate from editor.html context:
-  // - the editor page itself
-  // - JS/WASM files (ffmpeg core)
-  // Everything else (ad images, ad scripts, index.html) passes through unmodified.
-  const isEditorPage = url.pathname === '/editor.html' || url.pathname === '/editor';
-  const isFFmpegAsset = url.hostname.includes('jsdelivr') || url.pathname.includes('ffmpeg');
-  const needsIsolation = isEditorPage || isFFmpegAsset;
+  // Only intercept same-origin requests — never touch cross-origin ad resources
+  if (url.origin !== self.location.origin) return;
 
-  if (!needsIsolation) {
-    // Pass through without any header modification — ads work freely
-    return;
-  }
+  // Only intercept editor.html and local assets (js/, css/, fonts loaded by editor)
+  // Skip index.html entirely — it must NOT get COEP or ads break
+  const path = url.pathname;
+  const isEditorPage  = path === '/editor.html' || path === '/editor';
+  const isLocalAsset  = path.startsWith('/js/') || path.startsWith('/css/');
+
+  if (!isEditorPage && !isLocalAsset) return;
 
   e.respondWith(
     fetch(e.request).then(response => {
-      const newHeaders = new Headers(response.headers);
-      newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
-      newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
-      newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+      const headers = new Headers(response.headers);
+      headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+      headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+      headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
       return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,
-        headers: newHeaders,
+        headers,
       });
     }).catch(() => fetch(e.request))
   );

@@ -1,10 +1,14 @@
-# Cloudflare Pages headers
-# Global — no isolation (ads work here)
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
-# Editor only — ffmpeg.wasm isolation
 /editor.html
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Resource-Policy: same-origin
+
+/js/*
+  Cross-Origin-Resource-Policy: cross-origin
+
+/css/*
+  Cross-Origin-Resource-Policy: cross-origin
