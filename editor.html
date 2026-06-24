@@ -14,6 +14,65 @@
     body { background: var(--bg); min-height: 100vh; }
     .editor-root { padding: 16px 16px 32px; max-width: 1280px; margin: 0 auto; }
     @media (max-width: 768px) { .editor-root { padding: 10px 10px 24px; } }
+
+    /* Info panel — shown only before video is loaded */
+    .editor-info-panel {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .editor-info-intro {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      text-align: center;
+    }
+    .editor-info-intro strong { color: var(--text); }
+    .editor-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 900px) { .editor-info-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .editor-info-grid { grid-template-columns: 1fr; } }
+
+    .editor-info-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+    .editor-info-card:hover { border-color: var(--primary); }
+    .editor-info-icon {
+      width: 48px; height: 48px;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-light);
+      flex-shrink: 0;
+    }
+    .editor-info-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .editor-info-desc {
+      font-size: 12.5px;
+      color: var(--text2);
+      line-height: 1.65;
+    }
   </style>
 </head>
 <body>
@@ -41,6 +100,77 @@
           </label>
           <input type="file" id="fileInput" accept="video/mp4,video/webm,video/quicktime,.mov,.mp4,.webm" hidden />
         </div>
+      </div>
+    </section>
+
+    <!-- INFO PANEL — fills space below upload zone, visible only before video is loaded -->
+    <section class="editor-info-panel" id="editorInfoPanel">
+      <div class="editor-info-intro">
+        <p>ClipForge is a free browser-based video editor where you can trim and crop any video — regardless of file size or length — with <strong>no daily limits, no watermark, and no account required</strong>. Everything runs locally in your browser.</p>
+      </div>
+      <div class="editor-info-grid">
+
+        <div class="editor-info-card">
+          <div class="editor-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
+              <path d="M6 20L18 4"/><circle cx="6" cy="4" r="2"/><circle cx="18" cy="20" r="2"/>
+              <path d="M8 12h8"/>
+            </svg>
+          </div>
+          <h3 class="editor-info-title">Trim Any Video</h3>
+          <p class="editor-info-desc">Set a precise start and end point using the draggable timeline handles or type in exact timestamps in min:sec format. Preview your trim before exporting.</p>
+        </div>
+
+        <div class="editor-info-card">
+          <div class="editor-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
+              <path d="M6 2v14a2 2 0 002 2h14"/><path d="M18 22V8a2 2 0 00-2-2H2"/>
+            </svg>
+          </div>
+          <h3 class="editor-info-title">Crop to Any Ratio</h3>
+          <p class="editor-info-desc">Use the interactive crop overlay to drag and resize your frame. Choose from preset aspect ratios — 16:9 for YouTube, 1:1 for Instagram, 9:16 for TikTok &amp; Reels.</p>
+        </div>
+
+        <div class="editor-info-card">
+          <div class="editor-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </div>
+          <h3 class="editor-info-title">Export as MP4</h3>
+          <p class="editor-info-desc">Choose Low, Medium, or High quality and export a clean H.264 MP4 file with no watermark. Processing happens entirely in your browser — your file never leaves your device.</p>
+        </div>
+
+        <div class="editor-info-card">
+          <div class="editor-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+          </div>
+          <h3 class="editor-info-title">100% Private</h3>
+          <p class="editor-info-desc">No file is ever uploaded to a server. ClipForge uses ffmpeg.wasm — a WebAssembly build of the industry-standard FFmpeg encoder — running entirely inside your browser tab.</p>
+        </div>
+
+        <div class="editor-info-card">
+          <div class="editor-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h3 class="editor-info-title">No File Size Limits</h3>
+          <p class="editor-info-desc">Unlike cloud-based editors that restrict uploads to a few hundred MB, ClipForge handles files as large as your browser's available memory — perfect for long, high-resolution videos.</p>
+        </div>
+
+        <div class="editor-info-card">
+          <div class="editor-info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3 class="editor-info-title">No Daily Limits</h3>
+          <p class="editor-info-desc">Most free video editors cap you at a few exports per day. ClipForge has zero usage limits — trim and crop as many videos as you want, as often as you want, for free.</p>
+        </div>
+
       </div>
     </section>
 
@@ -265,5 +395,32 @@
 
   <script src="/js/sw-register.js"></script>
   <script src="/js/app.js"></script>
+  <script>
+    // Report document height to parent so iframe auto-sizes (no fixed 880px)
+    function reportHeight() {
+      const h = document.documentElement.scrollHeight;
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'cf-resize', height: h }, '*');
+      }
+    }
+    // Report on load and whenever DOM changes (video loaded, editor opened)
+    window.addEventListener('load', reportHeight);
+    new MutationObserver(reportHeight).observe(document.body, { childList: true, subtree: true, attributes: true });
+
+    // Hide info panel once a video is loaded into the editor
+    const infoPanelEl = document.getElementById('editorInfoPanel');
+    document.addEventListener('DOMContentLoaded', () => {
+      const fi = document.getElementById('fileInput');
+      if (fi) fi.addEventListener('change', () => {
+        if (infoPanelEl) infoPanelEl.style.display = 'none';
+        reportHeight();
+      });
+      const dz = document.getElementById('uploadZone');
+      if (dz) dz.addEventListener('drop', () => {
+        if (infoPanelEl) infoPanelEl.style.display = 'none';
+        reportHeight();
+      });
+    });
+  </script>
 </body>
 </html>

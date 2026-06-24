@@ -61,12 +61,14 @@
     }
     .editor-frame {
       width: 100%;
-      height: 880px;
+      height: 600px; /* sensible starting height before postMessage kicks in */
+      min-height: 500px;
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       background: var(--bg2);
       display: block;
       overflow: hidden;
+      transition: height 0.3s ease;
     }
     .ad-slot {
       max-width: 1280px;
@@ -228,6 +230,17 @@
   <div class="ad-slot">
     <div class="ad-slot-inner">
       <!-- Paste your bottom ad code here -->
+	  <script>
+  atOptions = {
+    'key' : '773ca98be2ca0cd828754195841d3174',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://crypotential.com/773ca98be2ca0cd828754195841d3174/invoke.js"></script>
+
       Advertisement
     </div>
   </div>
@@ -253,11 +266,12 @@
     document.getElementById('mobileToggle')?.addEventListener('click', () => {
       document.getElementById('mobileMenu').classList.toggle('open');
     });
-    // Auto-resize iframe to avoid double scrollbars on mobile
+    // Auto-resize iframe based on editor content height reported via postMessage
     const frame = document.getElementById('editorFrame');
     window.addEventListener('message', e => {
       if (e.data?.type === 'cf-resize' && e.data.height) {
-        frame.style.height = e.data.height + 'px';
+        const newH = Math.max(500, e.data.height + 20);
+        frame.style.height = newH + 'px';
       }
     });
   </script>
