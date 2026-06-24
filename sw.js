@@ -1,36 +1,22 @@
-// ============================================================
-// ClipForge Service Worker
-// Injects Cross-Origin-Opener-Policy and Cross-Origin-Embedder-Policy
-// headers on every response so SharedArrayBuffer is available
-// for ffmpeg.wasm — works on ANY static host, no server config needed.
-// ============================================================
+// ClipForge Service Worker — scoped to /editor.html
+// Injects COOP/COEP headers for ffmpeg.wasm SharedArrayBuffer support.
+// Does NOT run on index.html so ad scripts work freely there.
 
-const SW_VERSION = 'clipforge-v1';
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Clone and rewrite headers
-        const newHeaders = new Headers(response.headers);
-        newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
-        newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
-        newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
-
-        return new Response(response.body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: newHeaders,
-        });
-      })
-      .catch(() => fetch(event.request))
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    fetch(e.request).then(response => {
+      const newHeaders = new Headers(response.headers);
+      newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
+      newHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
+      newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders,
+      });
+    }).catch(() => fetch(e.request))
   );
 });

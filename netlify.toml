@@ -1,15 +1,35 @@
+# ClipForge — Netlify deployment config
+#
+# KEY ARCHITECTURE:
+#   /index.html   → landing page + ads (NO isolation headers)
+#   /editor.html  → ffmpeg.wasm editor (COOP/COEP isolated)
+#
+# Ad scripts (Adsterra, AdSense) work on index.html because
+# it has no COOP/COEP. ffmpeg.wasm works in editor.html
+# because it has full cross-origin isolation.
+
+# Default headers for ALL pages — safe, no isolation
 [[headers]]
   for = "/*"
   [headers.values]
-    Cross-Origin-Opener-Policy = "same-origin"
-    Cross-Origin-Embedder-Policy = "require-corp"
-    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# COOP/COEP only for the editor page and its assets
+[[headers]]
+  for = "/editor.html"
+  [headers.values]
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
+
+[[headers]]
+  for = "/js/app.js"
+  [headers.values]
+    Cross-Origin-Embedder-Policy = "require-corp"
+
 [[redirects]]
   from = "/editor"
-  to = "/"
+  to = "/editor.html"
   status = 200
 
 [[redirects]]
