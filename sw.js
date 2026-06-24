@@ -1,11 +1,27 @@
-// ClipForge Service Worker — scoped to /editor.html
-// Injects COOP/COEP headers for ffmpeg.wasm SharedArrayBuffer support.
-// Does NOT run on index.html so ad scripts work freely there.
+// ClipForge Service Worker — injects COOP/COEP ONLY for editor.html and its sub-resources.
+// index.html and everything loaded from it (ad scripts, ad images) are left untouched
+// so Adsterra and other ad networks can load cross-origin resources freely.
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
 self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+  const dest = e.request.destination;
+
+  // Only isolate requests that originate from editor.html context:
+  // - the editor page itself
+  // - JS/WASM files (ffmpeg core)
+  // Everything else (ad images, ad scripts, index.html) passes through unmodified.
+  const isEditorPage = url.pathname === '/editor.html' || url.pathname === '/editor';
+  const isFFmpegAsset = url.hostname.includes('jsdelivr') || url.pathname.includes('ffmpeg');
+  const needsIsolation = isEditorPage || isFFmpegAsset;
+
+  if (!needsIsolation) {
+    // Pass through without any header modification — ads work freely
+    return;
+  }
+
   e.respondWith(
     fetch(e.request).then(response => {
       const newHeaders = new Headers(response.headers);
