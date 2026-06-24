@@ -52,23 +52,68 @@
 
   <style>
     /* Landing-page specific layout */
-    .editor-frame-wrap {
+    .editor-cta-wrap {
       max-width: 1280px;
       margin: 0 auto;
-      padding: 16px 24px 0;
+      padding: 0 24px;
       position: relative;
       z-index: 1;
     }
-    .editor-frame {
-      width: 100%;
-      height: 600px; /* sensible starting height before postMessage kicks in */
-      min-height: 500px;
+    .editor-cta-box {
+      background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      background: var(--bg2);
-      display: block;
+      padding: 56px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      backdrop-filter: blur(12px);
+      position: relative;
       overflow: hidden;
-      transition: height 0.3s ease;
+    }
+    .editor-cta-box::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 200px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .editor-cta-icon {
+      width: 72px; height: 72px;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-light);
+    }
+    .editor-cta-title {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .editor-cta-sub {
+      font-size: 15px;
+      color: var(--text2);
+      max-width: 520px;
+      line-height: 1.65;
+    }
+    .editor-cta-btn {
+      font-size: 16px;
+      padding: 14px 32px;
+      margin-top: 4px;
+    }
+    .editor-cta-note {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: -4px;
+    }
+    @media (max-width: 640px) {
+      .editor-cta-box { padding: 40px 24px; }
     }
     .ad-slot {
       max-width: 1280px;
@@ -148,7 +193,7 @@
     </div>
   </div>
 
-  <!-- AD SLOT — TOP BANNER (above editor) -->
+  <!-- AD SLOT — TOP BANNER (above editor CTA) -->
   <div class="ad-slot">
     <div class="ad-slot-inner">
       <!-- Paste your top banner ad code here -->
@@ -156,16 +201,24 @@
     </div>
   </div>
 
-  <!-- EDITOR IFRAME — isolated page with COEP/COOP for ffmpeg.wasm -->
-  <div class="editor-frame-wrap">
-    <iframe
-      id="editorFrame"
-      class="editor-frame"
-      src="/editor.html"
-      allow="autoplay; clipboard-write"
-      loading="lazy"
-      title="ClipForge Video Editor"
-    ></iframe>
+  <!-- EDITOR CTA — opens editor.html as a full page (required for COEP/COOP isolation) -->
+  <div class="editor-cta-wrap">
+    <div class="editor-cta-box">
+      <div class="editor-cta-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
+          <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+        </svg>
+      </div>
+      <h2 class="editor-cta-title">Ready to Edit Your Video?</h2>
+      <p class="editor-cta-sub">Click below to open the ClipForge editor — trim, crop, and export your video for free with no watermark and no limits.</p>
+      <a href="/editor.html" class="btn btn-primary editor-cta-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+        </svg>
+        Open Free Video Editor
+      </a>
+      <p class="editor-cta-note">Opens in this tab — no download, no install, no sign-up</p>
+    </div>
   </div>
 
   <!-- AD SLOT — BELOW EDITOR -->
@@ -254,14 +307,6 @@
   <script>
     document.getElementById('mobileToggle')?.addEventListener('click', () => {
       document.getElementById('mobileMenu').classList.toggle('open');
-    });
-    // Auto-resize iframe based on editor content height reported via postMessage
-    const frame = document.getElementById('editorFrame');
-    window.addEventListener('message', e => {
-      if (e.data?.type === 'cf-resize' && e.data.height) {
-        const newH = Math.max(500, e.data.height + 20);
-        frame.style.height = newH + 'px';
-      }
     });
   </script>
 </body>
