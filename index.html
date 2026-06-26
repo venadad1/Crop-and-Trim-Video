@@ -122,36 +122,64 @@
       display: flex;
       justify-content: center;
     }
-    /* Po defaultu (na mobilnim ekranima) */
-.ad-desktop {
-  display: none !important; /* Sakrij desktop reklamu na mobilnom */
-}
-.ad-mobile {
-  display: block !important; /* Prikaži mobilnu reklamu */
-}
 
-/* Kada ekran pređe širinu od 768px (prelazak na tablet i desktop) */
-@media (min-width: 769px) {
-  .ad-desktop {
-    display: block !important; /* Prikaži desktop reklamu */
-  }
-  .ad-mobile {
-    display: none !important; /* Sakrij mobilnu reklamu na desktopu */
-  }
-}
+    /* ═══════════════════════════════════════════════
+       STRIKTNA ZABRANA I KONTROLA PRIKAZIVANJA REKLAMA
+       ═══════════════════════════════════════════════ */
+
+    /* 1. Podrazumevano stanje (Mobilni telefoni):
+       Kompletno gasi desktop reklamu i sve elemente/skripte unutar nje */
+    .ad-desktop, 
+    .ad-desktop * {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      height: 0 !important;
+      width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
+    /* Prikazuje samo mobilnu reklamu */
+    .ad-mobile {
+      display: block !important;
+    }
+
+    /* 2. Desktop stanje (Ekrani širi od 768px):
+       Kompletno gasi mobilnu reklamu i sve unutar nje, a pali desktop */
+    @media (min-width: 769px) {
+      .ad-desktop {
+        display: block !important;
+      }
+      
+      .ad-mobile, 
+      .ad-mobile * {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+    }
+
     .ad-slot-inner {
-  background: var(--glass);
-  border: 1px dashed var(--glass-border);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: auto;       /* Omogućava da se visina automatski prilagodi veličini reklame */
-  padding: 12px 0;    /* Dodaje malo lufta iznad i ispod same reklame */
-}
+      background: var(--glass);
+      border: 1px dashed var(--glass-border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: auto;       
+      padding: 12px 0;    
+    }
+
     @media (max-width: 768px) {
       .editor-frame { height: 100svh; border-radius: 0; border-left: none; border-right: none; }
       .editor-frame-wrap { padding: 8px 0 0; }
