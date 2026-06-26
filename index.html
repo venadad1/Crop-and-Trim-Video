@@ -115,54 +115,40 @@
     @media (max-width: 640px) {
       .editor-cta-box { padding: 40px 24px; }
     }
-    .ad-slot {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: center;
+    /* --- NOVI CSS ZA ADSTERRA BANERE --- */
+
+/* Kontejner sa belom pozadinom u kom se nalazi oglas (da se crni tekst vidi na tamnom sajtu) */
+.banner-container {
+    text-align: center;
+    margin: 20px auto;
+    padding: 10px;
+    background: #ffffff !important; 
+    border-radius: 8px;
+    max-width: 728px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* Prilagođeni kontejner za oglas */
-.ad-slot-inner {
-  background: var(--glass);
-  border: 1px dashed var(--glass-border);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 728px; /* Podrazumevana širina za desktop baner */
-  overflow: hidden;
-  display: block;   /* Menjamo flex u block da se elementi ne bi gurali u isti red */
-  text-align: center;
-  height: auto;       
-  padding: 12px 0;    
+/* Podrazumevano: prikaži desktop, sakrij mobilni baner */
+.desktop-banner {
+    display: block !important;
 }
-
-/* PODRAZUMEVANO (Desktop): Prikaži desktop, sakrij mobilni */
-.desktop-banner, .desktop-banner * {
-  display: block !important;
-}
-.mobile-banner, .mobile-banner * { 
-  display: none !important; 
-}
-
-/* MOBILNI REŽIM: Kada je ekran manji od 768px */
-@media (max-width: 768px) {
-  .desktop-banner, .desktop-banner * { 
+.mobile-banner { 
     display: none !important; 
-  }
-  .mobile-banner, .mobile-banner * { 
-    display: block !important; 
-    margin: 0 auto; 
-  }
-  .ad-slot-inner {
-    max-width: 320px; /* Skupljamo okvir na širinu mobilnog banera */
-    padding: 5px 0;
-  }
 }
 
+/* Kada je ekran manji od 768px (Mobilni uređaji) */
 @media (max-width: 768px) {
-  .editor-frame { height: 100svh; border-radius: 0; border-left: none; border-right: none; }
-  .editor-frame-wrap { padding: 8px 0 0; }
+    .desktop-banner { 
+        display: none !important; 
+    }
+    .mobile-banner { 
+        display: block !important; 
+        margin: 0 auto; 
+    }
+    .banner-container {
+        max-width: 320px; /* Prilagođavamo širinu belog okvira mobilnom baneru */
+        padding: 5px;
+    }
 }
   </style>
 </head>
