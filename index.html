@@ -116,74 +116,54 @@
       .editor-cta-box { padding: 40px 24px; }
     }
     .ad-slot {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 16px 24px;
-      display: flex;
-      justify-content: center;
-    }
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+}
 
-    /* ═══════════════════════════════════════════════
-       STRIKTNA ZABRANA I KONTROLA PRIKAZIVANJA REKLAMA
-       ═══════════════════════════════════════════════ */
+/* Prilagođeni kontejner za oglas */
+.ad-slot-inner {
+  background: var(--glass);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 728px; /* Podrazumevana širina za desktop baner */
+  overflow: hidden;
+  display: block;   /* Menjamo flex u block da se elementi ne bi gurali u isti red */
+  text-align: center;
+  height: auto;       
+  padding: 12px 0;    
+}
 
-    /* 1. Podrazumevano stanje (Mobilni telefoni):
-       Kompletno gasi desktop reklamu i sve elemente/skripte unutar nje */
-    .ad-desktop, 
-    .ad-desktop * {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      height: 0 !important;
-      width: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-    }
+/* PODRAZUMEVANO (Desktop): Prikaži desktop, sakrij mobilni */
+.desktop-banner, .desktop-banner * {
+  display: block !important;
+}
+.mobile-banner, .mobile-banner * { 
+  display: none !important; 
+}
 
-    /* Prikazuje samo mobilnu reklamu */
-    .ad-mobile {
-      display: block !important;
-    }
+/* MOBILNI REŽIM: Kada je ekran manji od 768px */
+@media (max-width: 768px) {
+  .desktop-banner, .desktop-banner * { 
+    display: none !important; 
+  }
+  .mobile-banner, .mobile-banner * { 
+    display: block !important; 
+    margin: 0 auto; 
+  }
+  .ad-slot-inner {
+    max-width: 320px; /* Skupljamo okvir na širinu mobilnog banera */
+    padding: 5px 0;
+  }
+}
 
-    /* 2. Desktop stanje (Ekrani širi od 768px):
-       Kompletno gasi mobilnu reklamu i sve unutar nje, a pali desktop */
-    @media (min-width: 769px) {
-      .ad-desktop {
-        display: block !important;
-      }
-      
-      .ad-mobile, 
-      .ad-mobile * {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-      }
-    }
-
-    .ad-slot-inner {
-      background: var(--glass);
-      border: 1px dashed var(--glass-border);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 100%;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: auto;       
-      padding: 12px 0;    
-    }
-
-    @media (max-width: 768px) {
-      .editor-frame { height: 100svh; border-radius: 0; border-left: none; border-right: none; }
-      .editor-frame-wrap { padding: 8px 0 0; }
-    }
+@media (max-width: 768px) {
+  .editor-frame { height: 100svh; border-radius: 0; border-left: none; border-right: none; }
+  .editor-frame-wrap { padding: 8px 0 0; }
+}
   </style>
 </head>
 <body>
