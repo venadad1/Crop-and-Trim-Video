@@ -122,19 +122,36 @@
       display: flex;
       justify-content: center;
     }
+    /* Po defaultu (na mobilnim ekranima) */
+.ad-desktop {
+  display: none !important; /* Sakrij desktop reklamu na mobilnom */
+}
+.ad-mobile {
+  display: block !important; /* Prikaži mobilnu reklamu */
+}
+
+/* Kada ekran pređe širinu od 768px (prelazak na tablet i desktop) */
+@media (min-width: 769px) {
+  .ad-desktop {
+    display: block !important; /* Prikaži desktop reklamu */
+  }
+  .ad-mobile {
+    display: none !important; /* Sakrij mobilnu reklamu na desktopu */
+  }
+}
     .ad-slot-inner {
-      background: var(--glass);
-      border: 1px dashed var(--glass-border);
-      border-radius: var(--radius);
-      min-height: 90px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text3);
-      font-size: 12px;
-      font-family: var(--font);
-    }
+  background: var(--glass);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;       /* Omogućava da se visina automatski prilagodi veličini reklame */
+  padding: 12px 0;    /* Dodaje malo lufta iznad i ispod same reklame */
+}
     @media (max-width: 768px) {
       .editor-frame { height: 100svh; border-radius: 0; border-left: none; border-right: none; }
       .editor-frame-wrap { padding: 8px 0 0; }
@@ -195,9 +212,13 @@
 
   <!-- AD SLOT — TOP BANNER (above editor CTA) -->
   <div class="ad-slot">
-    <div class="ad-slot-inner">
-      <!-- Paste your top banner ad code here -->
-      <script>
+  <div class="ad-slot-inner">
+    
+    <div class="ad-desktop">
+      Desktop Banner (728x90)
+    </div>
+<!-- Paste your top banner ad code here -->
+ <script>
   atOptions = {
     'key' : '773ca98be2ca0cd828754195841d3174',
     'format' : 'iframe',
@@ -208,9 +229,23 @@
 </script>
 <script src="https://crypotential.com/773ca98be2ca0cd828754195841d3174/invoke.js"></script>
 
-      Advertisement
+    <div class="ad-mobile">
+      Mobile Banner (320x50)
     </div>
+<!-- Paste your top banner ad code here -->
+ <script>
+  atOptions = {
+    'key' : '246ccf710fdcaeef59d42f4e745320ee',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://crypotential.com/246ccf710fdcaeef59d42f4e745320ee/invoke.js"></script>
+
   </div>
+</div>
 
   <!-- EDITOR CTA — opens editor.html as a full page (required for COEP/COOP isolation) -->
   <div class="editor-cta-wrap">
@@ -236,7 +271,7 @@
   <div class="ad-slot">
     <div class="ad-slot-inner">
       <!-- Paste your mid-page ad code here -->
-      <script async="async" data-cfasync="false" src="https://crypotential.com/5bf19cb81ab3e74fe86565494c591846/invoke.js"></script>
+       <script async="async" data-cfasync="false" src="https://crypotential.com/5bf19cb81ab3e74fe86565494c591846/invoke.js"></script>
 <div id="container-5bf19cb81ab3e74fe86565494c591846"></div>
 
       Advertisement
@@ -297,7 +332,7 @@
   <div class="ad-slot">
     <div class="ad-slot-inner">
       <!-- Paste your bottom ad code here -->
-      <script src="https://crypotential.com/7c/b0/af/7cb0afa542bb99a87f1fa5b72c97f37d.js"></script>
+       <script src="https://crypotential.com/7c/b0/af/7cb0afa542bb99a87f1fa5b72c97f37d.js"></script>
 
       Advertisement
     </div>
