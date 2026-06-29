@@ -3,367 +3,552 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClipForge — Free Online Video Editor | Trim & Crop Video, No Watermark, No Limits</title>
-  <meta name="description" content="ClipForge is a 100% free online video editor with no usage limits, no file size limits, and no watermark. Trim, cut, and crop MP4, MOV & WEBM videos instantly in your browser — no sign up, no upload to any server, no software install." />
-  <meta name="keywords" content="free online video editor, video trimmer online, video cropper online, cut video online free, crop video online, trim video no watermark, browser video editor, no download video editor, free video editor no limits, no file size limit video editor, mp4 trimmer online, vertical video cropper, 9:16 video crop" />
+  <title>ClipForge — Free Video Trimmer & Cropper Online | No Watermark, No Limits</title>
+  <meta name="description" content="Trim and crop any video online for free with ClipForge. No watermark, no file size limits, no daily caps, no account needed. Works entirely in your browser — your files stay on your device." />
+  <meta name="keywords" content="free online video editor, video trimmer online, video cropper online, cut video online free, crop video online, trim video no watermark, browser video editor, free video editor no limits, no file size limit video editor, mp4 trimmer online, vertical video cropper, 9:16 video crop, tiktok video crop" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://clipforge.app/" />
-
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://clipforge.app/" />
-  <meta property="og:title" content="ClipForge — Free Online Video Editor (No Watermark, No Limits)" />
-  <meta property="og:description" content="Trim and crop videos online for free, with zero usage limits and no watermark. 100% browser-based — your files never leave your device." />
-
+  <meta property="og:title" content="ClipForge — Free Video Trimmer & Cropper, No Watermark" />
+  <meta property="og:description" content="Trim and crop videos free in your browser. No watermark, no limits, no uploads to any server." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ClipForge — Free Online Video Editor (No Watermark, No Limits)" />
-  <meta name="twitter:description" content="Trim and crop videos online for free, with zero usage limits and no watermark. 100% browser-based." />
-
+  <meta name="twitter:title" content="ClipForge — Free Video Trimmer & Cropper, No Watermark" />
+  <meta name="twitter:description" content="Trim and crop videos free in your browser. No watermark, no limits, no uploads." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
-
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "ClipForge",
     "applicationCategory": "MultimediaApplication",
-    "operatingSystem": "Any (runs in web browser)",
+    "operatingSystem": "Any (web browser)",
     "url": "https://clipforge.app/",
-    "description": "100% free browser-based video editor. Trim and crop MP4, MOV, WEBM with no watermark, no limits, no uploads.",
+    "description": "Free browser-based video trimmer and cropper. No watermark, no file size limits, no account required.",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "featureList": [
-      "Free video trimming with no usage limits",
-      "No file size limits on uploads or exports",
-      "Interactive video cropping with 16:9, 1:1, 9:16 aspect ratio presets",
-      "No watermark on exported videos",
-      "100% browser-based — no server uploads",
-      "No account or sign-up required"
-    ]
+    "featureList": ["Free video trimming","Crop with aspect ratio presets","No watermark","No file size limits","No account required","100% private — no server uploads"]
   }
   </script>
 
-  <!-- ═══════════════════════════════════════════════
-       AD SCRIPTS GO HERE — no COEP/COOP on this page
-       Example: Adsterra, Google AdSense, etc.
-       ═══════════════════════════════════════════════ -->
-  <!-- <script async src="//your-ad-network.com/tag.js"></script> -->
+  <!-- ═══════════════════════════════════
+       AD SCRIPTS — paste here
+       Social Bar, Native Banner, Display
+       ═══════════════════════════════════ -->
 
   <style>
-    /* Landing-page specific layout */
-    .editor-cta-wrap {
-      max-width: 1280px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #05050F;
+      --bg2:      #0C0C1C;
+      --bg3:      #121228;
+      --glass:    rgba(255,255,255,0.04);
+      --gb:       rgba(255,255,255,0.08);
+      --primary:  #6D28D9;
+      --plight:   #8B5CF6;
+      --accent:   #0EA5E9;
+      --green:    #10B981;
+      --text:     #F1F0FF;
+      --text2:    #9494B8;
+      --text3:    #55557A;
+      --border:   rgba(255,255,255,0.07);
+      --r:        12px;
+      --font:     'Inter', system-ui, sans-serif;
+      --tr:       0.18s cubic-bezier(0.4,0,0.2,1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    body::before {
+      content:'';position:fixed;top:-150px;left:-150px;
+      width:500px;height:500px;
+      background:radial-gradient(circle,rgba(109,40,217,0.1) 0%,transparent 70%);
+      pointer-events:none;z-index:0;
+    }
+    a { text-decoration: none; }
+
+    /* ── SOCIAL BAR SLOT ── */
+    .social-bar-slot {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5,5,15,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 20px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+    .logo-icon {
+      font-size: 20px;
+      background: linear-gradient(135deg,var(--plight),var(--accent));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .logo-text { font-size:17px;font-weight:800;letter-spacing:-0.4px;color:var(--text); }
+    .logo-accent {
+      background: linear-gradient(90deg,var(--plight),var(--accent));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .nav-links { display:flex;gap:2px;margin-left:auto; }
+    .nav-link {
+      color:var(--text2);font-size:13px;font-weight:500;
+      padding:5px 12px;border-radius:8px;
+      transition:color var(--tr),background var(--tr);
+    }
+    .nav-link:hover,.nav-link.active { color:var(--text);background:var(--glass); }
+    .nav-link.active { color:var(--plight); }
+    .nav-cta {
+      background:linear-gradient(135deg,var(--primary),var(--plight));
+      color:white;font-size:12px;font-weight:700;
+      padding:6px 14px;border-radius:8px;
+      transition:opacity var(--tr),transform var(--tr);
+      flex-shrink:0;
+    }
+    .nav-cta:hover { opacity:0.88;transform:translateY(-1px); }
+    .nav-toggle {
+      display:none;flex-direction:column;gap:4px;
+      background:none;border:none;cursor:pointer;padding:4px;margin-left:auto;
+    }
+    .nav-toggle span { display:block;width:20px;height:2px;background:var(--text2);border-radius:2px; }
+    .nav-mobile { display:none;flex-direction:column;padding:10px 20px 14px;gap:2px;border-top:1px solid var(--border); }
+    .nav-mobile.open { display:flex; }
+    @media(max-width:640px){
+      .nav-links,.nav-cta { display:none; }
+      .nav-toggle { display:flex; }
+    }
+
+    /* ── TOP AD BANNER ── */
+    .top-ad {
+      display:flex;
+      justify-content:center;
+      padding:8px 16px;
+      background:var(--bg);
+      border-bottom:1px solid var(--border);
+    }
+    .top-ad-inner {
+      width:728px;max-width:100%;min-height:90px;
+      display:flex;align-items:center;justify-content:center;
+      background:var(--bg2);
+      border:1px dashed var(--border);
+      border-radius:8px;
+      color:var(--text3);font-size:11px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 28px 20px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      align-items: center;
       position: relative;
       z-index: 1;
     }
-    .editor-cta-box {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: 56px 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 16px;
-      backdrop-filter: blur(12px);
-      position: relative;
-      overflow: hidden;
-    }
-    .editor-cta-box::before {
-      content: '';
-      position: absolute;
-      top: -60px; left: 50%; transform: translateX(-50%);
-      width: 400px; height: 200px;
-      background: radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .editor-cta-icon {
-      width: 72px; height: 72px;
-      background: rgba(124,58,237,0.12);
-      border: 1px solid rgba(124,58,237,0.3);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary-light);
-    }
-    .editor-cta-title {
-      font-size: clamp(22px, 3vw, 32px);
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .editor-cta-sub {
-      font-size: 15px;
-      color: var(--text2);
-      max-width: 520px;
-      line-height: 1.65;
-    }
-    .editor-cta-btn {
-      font-size: 16px;
-      padding: 14px 32px;
-      margin-top: 4px;
-    }
-    .editor-cta-note {
-      font-size: 12px;
-      color: var(--text3);
-      margin-top: -4px;
-    }
-    @media (max-width: 640px) {
-      .editor-cta-box { padding: 40px 24px; }
-    }
-   .ad-slot {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: center;
-}
+    @media(max-width:860px){ .hero { grid-template-columns:1fr; } }
 
-/* Prilagođeni kontejner za oglas */
-.ad-slot-inner {
-  background: var(--glass);
-  border: 1px dashed var(--glass-border);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 728px; /* Podrazumevana širina za desktop baner */
-  overflow: hidden;
-  display: block;   /* Menjamo flex u block da se elementi ne bi gurali u isti red */
-  text-align: center;
-  height: auto;       
-  padding: 12px 0;    
-}
+    .hero-left { display:flex;flex-direction:column;gap:14px; }
+    .hero-badge {
+      display:inline-flex;align-items:center;gap:7px;
+      background:var(--glass);border:1px solid var(--gb);
+      padding:4px 12px;border-radius:100px;
+      font-size:11px;color:var(--text2);width:fit-content;
+    }
+    .badge-dot {
+      width:6px;height:6px;border-radius:50%;
+      background:var(--green);box-shadow:0 0 6px var(--green);
+      animation:pdot 2s ease-in-out infinite;
+    }
+    @keyframes pdot{0%,100%{opacity:1}50%{opacity:.4}}
+    .hero-h1 {
+      font-size:clamp(24px,3.5vw,40px);
+      font-weight:800;letter-spacing:-1px;line-height:1.12;
+    }
+    .hero-grad {
+      background:linear-gradient(90deg,var(--plight),var(--accent));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .hero-p { font-size:14px;color:var(--text2);line-height:1.7;max-width:520px; }
+    .hero-p strong { color:var(--text); }
+    .hero-pills {
+      display:flex;flex-wrap:wrap;gap:6px;
+    }
+    .pill {
+      font-size:11px;font-weight:600;color:var(--green);
+      background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.22);
+      padding:4px 10px;border-radius:100px;
+    }
+    .hero-btn {
+      display:inline-flex;align-items:center;gap:8px;
+      background:linear-gradient(135deg,var(--primary),var(--plight));
+      color:white;font-family:var(--font);font-weight:700;font-size:15px;
+      padding:13px 28px;border-radius:10px;
+      box-shadow:0 4px 20px rgba(109,40,217,0.35);
+      transition:transform var(--tr),box-shadow var(--tr);
+      width:fit-content;
+    }
+    .hero-btn:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(109,40,217,0.45); }
+    .hero-note { font-size:11px;color:var(--text3); }
 
-/* PODRAZUMEVANO (Desktop): Prikaži desktop, sakrij mobilni */
-.desktop-banner, .desktop-banner * {
-  display: block !important;
-}
-.mobile-banner, .mobile-banner * { 
-  display: none !important; 
-}
+    /* ── NATIVE AD CARD (right of hero) ── */
+    .native-ad-card {
+      background:var(--bg2);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      padding:16px;
+      display:flex;flex-direction:column;gap:10px;
+    }
+    .native-ad-label {
+      font-size:10px;font-weight:600;color:var(--text3);
+      text-transform:uppercase;letter-spacing:.06em;
+    }
+    .native-ad-inner {
+      min-height:200px;
+      background:var(--bg3);
+      border:1px dashed var(--border);
+      border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text3);font-size:11px;
+    }
+    @media(max-width:860px){ .native-ad-card { display:none; } }
 
-/* MOBILNI REŽIM: Kada je ekran manji od 768px */
-@media (max-width: 768px) {
-  .desktop-banner, .desktop-banner * { 
-    display: none !important; 
-  }
-  .mobile-banner, .mobile-banner * { 
-    display: block !important; 
-    margin: 0 auto; 
-  }
-  .ad-slot-inner {
-    max-width: 320px; /* Skupljamo okvir na širinu mobilnog banera */
-    padding: 5px 0;
-  }
-}
+    /* ── MID AD ── */
+    .mid-ad {
+      display:flex;justify-content:center;
+      padding:12px 20px;
+      max-width:1200px;margin:0 auto;
+    }
+    .mid-ad-inner {
+      width:728px;max-width:100%;min-height:90px;
+      background:var(--bg2);border:1px dashed var(--border);border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text3);font-size:11px;
+    }
 
-@media (max-width: 768px) {
-  .editor-frame { height: 100svh; border-radius: 0; border-left: none; border-right: none; }
-  .editor-frame-wrap { padding: 8px 0 0; }
-}
+    /* ── FEATURES STRIP ── */
+    .features {
+      max-width:1200px;margin:0 auto;
+      padding:0 20px 24px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    @media(max-width:700px){ .features { grid-template-columns:1fr; } }
+    .feat-card {
+      background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);
+      padding:18px 16px;display:flex;flex-direction:column;gap:8px;
+      transition:border-color var(--tr);
+    }
+    .feat-card:hover { border-color:var(--primary); }
+    .feat-icon {
+      width:40px;height:40px;border-radius:10px;
+      background:rgba(109,40,217,0.12);border:1px solid rgba(109,40,217,0.22);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--plight);
+    }
+    .feat-title { font-size:14px;font-weight:700; }
+    .feat-desc { font-size:12px;color:var(--text2);line-height:1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .hiw {
+      max-width:1200px;margin:0 auto;
+      padding:0 20px 24px;
+    }
+    .section-title {
+      font-size:clamp(18px,2.5vw,26px);font-weight:800;letter-spacing:-.5px;
+      text-align:center;margin-bottom:16px;
+    }
+    .steps {
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+    }
+    @media(max-width:700px){ .steps { grid-template-columns:1fr; } }
+    .step-card {
+      background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);
+      padding:18px 16px;display:flex;flex-direction:column;gap:8px;
+    }
+    .step-num {
+      width:26px;height:26px;border-radius:50%;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      color:white;font-size:12px;font-weight:700;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .step-title { font-size:14px;font-weight:700; }
+    .step-desc { font-size:12px;color:var(--text2);line-height:1.6; }
+
+    /* ── WHY SECTION ── */
+    .why {
+      max-width:1200px;margin:0 auto;
+      padding:0 20px 32px;
+    }
+    .why-grid {
+      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+    }
+    @media(max-width:700px){ .why-grid { grid-template-columns:1fr; } }
+    .why-card {
+      background:var(--glass);border:1px solid var(--gb);border-radius:var(--r);
+      padding:16px;
+    }
+    .why-title { font-size:13px;font-weight:700;color:var(--plight);margin-bottom:5px; }
+    .why-desc { font-size:12px;color:var(--text2);line-height:1.65; }
+
+    /* ── BOTTOM AD ── */
+    .bot-ad {
+      display:flex;justify-content:center;
+      padding:0 20px 24px;
+      max-width:1200px;margin:0 auto;
+    }
+    .bot-ad-inner {
+      width:728px;max-width:100%;min-height:90px;
+      background:var(--bg2);border:1px dashed var(--border);border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--text3);font-size:11px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top:1px solid var(--border);
+      padding:20px;
+      max-width:1200px;margin:0 auto;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      text-align:center;
+    }
+    .footer-brand { display:flex;align-items:center;gap:6px; }
+    .footer-links { display:flex;gap:16px; }
+    .footer-links a { font-size:12px;color:var(--text3);transition:color var(--tr); }
+    .footer-links a:hover { color:var(--text); }
+    .footer-copy { font-size:11px;color:var(--text3); }
+
+    /* ── UTILS ── */
+    .hidden { display:none!important; }
+    ::selection { background:var(--primary);color:white; }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:var(--bg3);border-radius:4px; }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
-        <span class="logo-icon">⬡</span>
-        <span class="logo-text">Clip<span class="logo-accent">Forge</span></span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link active">Editor</a>
-        <a href="pages/terms.html" class="nav-link">Terms</a>
-        <a href="pages/privacy.html" class="nav-link">Privacy</a>
-        <a href="pages/sitemap.html" class="nav-link">Sitemap</a>
-      </div>
-      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <div class="nav-mobile-menu" id="mobileMenu">
-      <a href="index.html" class="nav-link active">Editor</a>
-      <a href="pages/terms.html" class="nav-link">Terms</a>
-      <a href="pages/privacy.html" class="nav-link">Privacy</a>
-      <a href="pages/sitemap.html" class="nav-link">Sitemap</a>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <div class="hero-wrap">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        100% free forever — no usage limits, no watermark, no sign-up
-      </div>
-      <h1 class="hero-h1">
-        The Free Online Video Editor that <span class="hero-accent-text">Trims &amp; Crops</span> in Seconds
-      </h1>
-      <p class="hero-sub">
-        ClipForge is a 100% free browser video editor with <strong>zero usage limits</strong>, <strong>no file size limits</strong>, and <strong>no watermark</strong>.
-        Cut, trim, and crop MP4, MOV, and WEBM videos instantly — no software install, no account, and no upload to any server.
-      </p>
-      <div class="hero-pills">
-        <span class="hero-pill">✓ 100% Free</span>
-        <span class="hero-pill">✓ No Usage Limits</span>
-        <span class="hero-pill">✓ No File Size Limits</span>
-        <span class="hero-pill">✓ No Watermark</span>
-        <span class="hero-pill">✓ No Sign-Up</span>
-        <span class="hero-pill">✓ 100% Private</span>
-      </div>
-    </div>
+  <!-- SOCIAL BAR SLOT — fixed bottom (Adsterra Social Bar) -->
+  <div class="social-bar-slot">
+    <!-- Paste Adsterra Social Bar script here -->
   </div>
 
-  <!-- AD SLOT — TOP BANNER (above editor CTA) -->
-  <div class="ad-slot">
-  <div class="ad-slot-inner">
-    
-    <div class="ad-desktop">
-    </div>
-<!-- Paste your top banner ad code here -->
- <script>
-  atOptions = {
-    'key' : '773ca98be2ca0cd828754195841d3174',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://crypotential.com/773ca98be2ca0cd828754195841d3174/invoke.js"></script>
-
-    <div class="ad-mobile">
-    </div>
-<!-- Paste your top banner ad code here -->
- <script>
-  atOptions = {
-    'key' : '246ccf710fdcaeef59d42f4e745320ee',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://crypotential.com/246ccf710fdcaeef59d42f4e745320ee/invoke.js"></script>
-
-  </div>
-</div>
-
-  <!-- EDITOR CTA — opens editor.html as a full page (required for COEP/COOP isolation) -->
-  <div class="editor-cta-wrap">
-    <div class="editor-cta-box">
-      <div class="editor-cta-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
-          <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-        </svg>
-      </div>
-      <h2 class="editor-cta-title">Ready to Edit Your Video?</h2>
-      <p class="editor-cta-sub">Click below to open the ClipForge editor — trim, crop, and export your video for free with no watermark and no limits.</p>
-      <a href="/editor.html" class="btn btn-primary editor-cta-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
-        </svg>
-        Open Free Video Editor
-      </a>
-      <p class="editor-cta-note">Opens in this tab — no download, no install, no sign-up</p>
-    </div>
-  </div>
-
-  <!-- AD SLOT — BELOW EDITOR -->
-  <div class="ad-slot">
-    <div class="ad-slot-inner">
-      <!-- Paste your mid-page ad code here -->
-       <script async="async" data-cfasync="false" src="https://crypotential.com/5bf19cb81ab3e74fe86565494c591846/invoke.js"></script>
-<div id="container-5bf19cb81ab3e74fe86565494c591846"></div>
-
+  <!-- TOP LEADERBOARD AD (728×90) -->
+  <div class="top-ad">
+    <div class="top-ad-inner">
+      <!-- Paste top banner ad code here (728×90) -->
       Advertisement
     </div>
   </div>
 
-  <!-- HOW IT WORKS / SEO CONTENT -->
-  <section class="info-section">
-    <div class="info-inner">
-
-      <div class="info-block">
-        <h2 class="info-h2">How to Trim and Crop a Video Online — Free, in 3 Steps</h2>
-        <div class="steps-grid">
-          <div class="step-card">
-            <span class="step-num">1</span>
-            <h3 class="step-title">Upload Your Video</h3>
-            <p class="step-desc">Drag and drop or choose a file inside the editor above. ClipForge supports MP4, MOV, and WEBM — with no upload size limit, because your video never leaves your device.</p>
-          </div>
-          <div class="step-card">
-            <span class="step-num">2</span>
-            <h3 class="step-title">Trim &amp; Crop</h3>
-            <p class="step-desc">Drag the trim handles to set your start and end points, then use the crop tool with 16:9, 1:1, or 9:16 presets to resize for YouTube, Instagram, or TikTok.</p>
-          </div>
-          <div class="step-card">
-            <span class="step-num">3</span>
-            <h3 class="step-title">Export — Free, No Watermark</h3>
-            <p class="step-desc">Click Export and your trimmed, cropped MP4 downloads straight to your device. No watermark, no account, no usage limit — ever.</p>
-          </div>
-        </div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/index.html" class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">Clip<span class="logo-accent">Forge</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="/index.html" class="nav-link active">Home</a>
+        <a href="/pages/terms.html" class="nav-link">Terms</a>
+        <a href="/pages/privacy.html" class="nav-link">Privacy</a>
+        <a href="/pages/sitemap.html" class="nav-link">Sitemap</a>
       </div>
+      <a href="/editor.html" class="nav-cta">Open Editor →</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <a href="/index.html" class="nav-link active">Home</a>
+      <a href="/editor.html" class="nav-link" style="color:var(--plight)">Open Editor →</a>
+      <a href="/pages/terms.html" class="nav-link">Terms</a>
+      <a href="/pages/privacy.html" class="nav-link">Privacy</a>
+      <a href="/pages/sitemap.html" class="nav-link">Sitemap</a>
+    </div>
+  </nav>
 
-      <div class="info-block">
-        <h2 class="info-h2">Why ClipForge is the Best Free Online Video Editor</h2>
-        <div class="why-grid">
-          <div class="why-card">
-            <h3 class="why-title">100% Free, No Usage Limits, No File Size Limits</h3>
-            <p class="why-desc">Most online video editors cap your exports, restrict file size, add a watermark, or lock features behind a paywall. ClipForge has none of that — unlimited trims, unlimited crops, unlimited exports, any file size, completely free.</p>
-          </div>
-          <div class="why-card">
-            <h3 class="why-title">No Upload, No Server, 100% Private</h3>
-            <p class="why-desc">Unlike most video trimmer and video cropper tools online, ClipForge never uploads your file to a server. All processing happens locally in your browser using ffmpeg.wasm, so your content stays private.</p>
-          </div>
-          <div class="why-card">
-            <h3 class="why-title">No Install, No Sign-Up</h3>
-            <p class="why-desc">Skip the heavy desktop software and account creation. Open ClipForge in any modern browser and start cutting and cropping your video immediately.</p>
-          </div>
-          <div class="why-card">
-            <h3 class="why-title">Perfect for Every Platform</h3>
-            <p class="why-desc">Crop to 9:16 for TikTok and Reels, 1:1 for Instagram posts, or keep 16:9 for YouTube — ClipForge's aspect ratio presets make repurposing video fast and easy.</p>
-          </div>
-        </div>
+  <!-- HERO + NATIVE AD -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Always free · Zero limits · No sign-up required
       </div>
+      <h1 class="hero-h1">
+        Trim &amp; Crop Videos Online —<br>
+        <span class="hero-grad">Free, Fast &amp; Private</span>
+      </h1>
+      <p class="hero-p">
+        Cut, trim, and crop MP4, MOV &amp; WEBM videos straight in your browser.
+        <strong>No watermark, no file size cap, no daily export limits</strong> — and nothing ever gets uploaded to a server.
+      </p>
+      <div class="hero-pills">
+        <span class="pill">✓ 100% Free</span>
+        <span class="pill">✓ No Watermark</span>
+        <span class="pill">✓ No File Size Limits</span>
+        <span class="pill">✓ No Sign-Up</span>
+        <span class="pill">✓ No Daily Limits</span>
+        <span class="pill">✓ 100% Private</span>
+      </div>
+      <a href="/editor.html" class="hero-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+        </svg>
+        Start Editing — It's Free
+      </a>
+      <p class="hero-note">No download · No account · Works in Chrome, Firefox &amp; Safari</p>
+    </div>
 
+    <!-- NATIVE AD — right column (desktop only) -->
+    <div class="native-ad-card">
+      <span class="native-ad-label">Sponsored</span>
+      <div class="native-ad-inner">
+        <!-- Paste native banner ad code here -->
+        Native Ad
+      </div>
     </div>
   </section>
 
-  <!-- AD SLOT — BOTTOM -->
-  <div class="ad-slot">
-    <div class="ad-slot-inner">
-      <!-- Paste your bottom ad code here -->
-       <script src="https://crypotential.com/7c/b0/af/7cb0afa542bb99a87f1fa5b72c97f37d.js"></script>
+  <!-- MID LEADERBOARD AD -->
+  <div class="mid-ad">
+    <div class="mid-ad-inner">
+      <!-- Paste mid banner ad code here (728×90) -->
+      Advertisement
+    </div>
+  </div>
 
+  <!-- FEATURES STRIP -->
+  <section class="features">
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
+          <path d="M6 20L18 4"/><circle cx="6" cy="4" r="2"/><circle cx="18" cy="20" r="2"/><path d="M8 12h8"/>
+        </svg>
+      </div>
+      <div class="feat-title">Precise Video Trimming</div>
+      <div class="feat-desc">Drag the timeline handles or type exact timestamps in min:sec to cut your video with frame-level accuracy. Preview before you export.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
+          <path d="M6 2v14a2 2 0 002 2h14"/><path d="M18 22V8a2 2 0 00-2-2H2"/>
+        </svg>
+      </div>
+      <div class="feat-title">Smart Video Cropping</div>
+      <div class="feat-desc">Drag and resize the crop overlay with aspect ratio presets — 16:9 for YouTube, 1:1 for Instagram, 9:16 for TikTok and Reels.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      </div>
+      <div class="feat-title">Export MP4 — No Watermark</div>
+      <div class="feat-desc">Choose Low, Medium, or High quality and download a clean H.264 MP4. Zero branding added, zero files sent to a server.</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="hiw">
+    <h2 class="section-title">How to Edit Your Video — 3 Simple Steps</h2>
+    <div class="steps">
+      <div class="step-card">
+        <span class="step-num">1</span>
+        <div class="step-title">Upload Your Video</div>
+        <div class="step-desc">Drag and drop or pick a file from your device. Supports MP4, MOV, and WEBM with no file size restrictions.</div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">2</span>
+        <div class="step-title">Trim &amp; Crop</div>
+        <div class="step-desc">Set your start and end points on the timeline, then position the crop frame for your target platform and aspect ratio.</div>
+      </div>
+      <div class="step-card">
+        <span class="step-num">3</span>
+        <div class="step-title">Download Free MP4</div>
+        <div class="step-desc">Hit Export and your edited video downloads instantly — no watermark, no waiting, no account needed.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CLIPFORGE -->
+  <section class="why">
+    <h2 class="section-title">Why Choose ClipForge?</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-title">Truly Free — No Tricks</div>
+        <div class="why-desc">Many "free" editors limit exports, add watermarks, or lock features behind a subscription. ClipForge is genuinely free with no hidden paywalls, no export caps, and no file size restrictions — ever.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Your Files Never Leave Your Device</div>
+        <div class="why-desc">Unlike cloud-based tools that upload your video to remote servers, ClipForge processes everything locally using ffmpeg.wasm — a powerful WebAssembly encoder running entirely inside your browser tab.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-title">No Install, No Account, No Waiting</div>
+        <div class="why-desc">Open the editor in any modern browser and start working immediately. No app to download, no email to verify, no loading screen beyond the initial ffmpeg engine startup.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Built for Every Platform</div>
+        <div class="why-desc">One-click aspect ratio presets make it fast to repurpose content: 9:16 for TikTok and Instagram Reels, 1:1 for posts, 16:9 for YouTube — all without re-recording or using a desktop editor.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM AD -->
+  <div class="bot-ad">
+    <div class="bot-ad-inner">
+      <!-- Paste bottom banner ad code here (728×90) -->
       Advertisement
     </div>
   </div>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo-icon">⬡</span>
-        <span class="logo-text">Clip<span class="logo-accent">Forge</span></span>
-      </div>
-      <div class="footer-links">
-        <a href="index.html">Editor</a>
-        <a href="pages/terms.html">Terms</a>
-        <a href="pages/privacy.html">Privacy</a>
-        <a href="pages/sitemap.html">Sitemap</a>
-      </div>
-      <p class="footer-copy">ClipForge © 2026 — All video processing is done locally in your browser.</p>
+    <div class="footer-brand">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">Clip<span class="logo-accent">Forge</span></span>
     </div>
+    <div class="footer-links">
+      <a href="/index.html">Home</a>
+      <a href="/editor.html">Editor</a>
+      <a href="/pages/terms.html">Terms</a>
+      <a href="/pages/privacy.html">Privacy</a>
+      <a href="/pages/sitemap.html">Sitemap</a>
+    </div>
+    <p class="footer-copy">ClipForge © 2026 — Video processing runs locally in your browser. No uploads. No tracking.</p>
   </footer>
 
   <script>
-    document.getElementById('mobileToggle')?.addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('navMobile').classList.toggle('open');
     });
   </script>
 </body>

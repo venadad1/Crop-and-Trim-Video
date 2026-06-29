@@ -3,31 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ClipForge Editor</title>
+  <title>ClipForge — Video Editor</title>
   <meta name="robots" content="noindex" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
   <style>
-    /* Editor-only: no nav, no hero, no footer — clean workspace */
-    body { background: var(--bg); min-height: 100vh; }
-    .editor-root { padding: 16px 16px 32px; max-width: 1280px; margin: 0 auto; }
-    @media (max-width: 768px) { .editor-root { padding: 10px 10px 24px; } }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); min-height: 100vh; font-family: var(--font); }
 
-    /* Info panel — shown only before video is loaded */
+    /* ── TOP BAR ── */
+    .editor-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(5,5,15,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .editor-logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--primary-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-text { font-size: 15px; font-weight: 800; letter-spacing: -0.4px; color: var(--text); }
+    .logo-accent {
+      background: linear-gradient(90deg, var(--primary-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      transition: color 0.18s, border-color 0.18s;
+    }
+    .back-link:hover { color: var(--text); border-color: var(--primary-light); }
+
+    /* ── ROOT ── */
+    .editor-root {
+      padding: 14px 14px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    @media(max-width:640px){ .editor-root { padding: 10px 10px 24px; } }
+
+    /* ── INFO PANEL ── */
     .editor-info-panel {
-      margin-top: 24px;
+      margin-top: 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
     .editor-info-intro {
       background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 18px 22px;
-      font-size: 14px;
+      padding: 16px 20px;
+      font-size: 13.5px;
       color: var(--text2);
       line-height: 1.7;
       text-align: center;
@@ -36,54 +90,52 @@
     .editor-info-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      gap: 12px;
     }
-    @media (max-width: 900px) { .editor-info-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 540px) { .editor-info-grid { grid-template-columns: 1fr; } }
-
+    @media(max-width:900px){ .editor-info-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:540px){ .editor-info-grid { grid-template-columns: 1fr; } }
     .editor-info-card {
       background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 20px 18px;
+      padding: 18px 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      transition: border-color 0.2s;
+      gap: 8px;
+      transition: border-color 0.18s;
     }
     .editor-info-card:hover { border-color: var(--primary); }
     .editor-info-icon {
-      width: 48px; height: 48px;
-      background: rgba(124,58,237,0.12);
-      border: 1px solid rgba(124,58,237,0.25);
-      border-radius: 12px;
+      width: 44px; height: 44px;
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.22);
+      border-radius: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--primary-light);
-      flex-shrink: 0;
     }
-    .editor-info-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .editor-info-desc {
-      font-size: 12.5px;
-      color: var(--text2);
-      line-height: 1.65;
-    }
+    .editor-info-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .editor-info-desc { font-size: 12px; color: var(--text2); line-height: 1.65; }
   </style>
 </head>
 <body>
 
-  <!-- Back link -->
-  <div style="padding: 12px 16px 0; max-width:1280px; margin:0 auto;">
-    <a href="/index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--text3);font-size:13px;text-decoration:none;font-family:var(--font);">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Back to ClipForge
+  <!-- TOP BAR -->
+  <div class="editor-topbar">
+    <a href="/index.html" class="editor-logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">Clip<span class="logo-accent">Forge</span></span>
+    </a>
+    <a href="/index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Home
     </a>
   </div>
+
+  <div class="editor-root">
+
+    <!-- UPLOAD ZONE -->
     <section class="upload-section" id="uploadSection">
       <div class="upload-zone" id="uploadZone">
         <div class="upload-waveform" aria-hidden="true">
@@ -95,10 +147,10 @@
               <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
             </svg>
           </div>
-          <h2 class="upload-title">Drop Your Video to Start Editing — Free</h2>
+          <h2 class="upload-title">Drop Your Video to Start Editing</h2>
           <p class="upload-sub">MP4, MOV, WEBM — no file size limits, no watermark, no time limit</p>
           <label class="btn btn-primary upload-btn" for="fileInput">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
               <path d="M15 10l-4 4-4-4M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z"/>
             </svg>
             Choose File
@@ -108,74 +160,54 @@
       </div>
     </section>
 
-    <!-- INFO PANEL — fills space below upload zone, visible only before video is loaded -->
+    <!-- INFO PANEL -->
     <section class="editor-info-panel" id="editorInfoPanel">
       <div class="editor-info-intro">
-        <p>ClipForge is a free browser-based video editor where you can trim and crop any video — regardless of file size or length — with <strong>no daily limits, no watermark, and no account required</strong>. Everything runs locally in your browser.</p>
+        ClipForge lets you <strong>trim and crop any video</strong> right in your browser — no matter how large or how long. <strong>100% free, no daily limits, no watermark.</strong> Everything runs locally; your files never leave your device.
       </div>
       <div class="editor-info-grid">
-
         <div class="editor-info-card">
           <div class="editor-info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
-              <path d="M6 20L18 4"/><circle cx="6" cy="4" r="2"/><circle cx="18" cy="20" r="2"/>
-              <path d="M8 12h8"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><path d="M6 20L18 4"/><circle cx="6" cy="4" r="2"/><circle cx="18" cy="20" r="2"/><path d="M8 12h8"/></svg>
           </div>
-          <h3 class="editor-info-title">Trim Any Video</h3>
-          <p class="editor-info-desc">Set a precise start and end point using the draggable timeline handles or type in exact timestamps in min:sec format. Preview your trim before exporting.</p>
+          <div class="editor-info-title">Trim Any Video</div>
+          <div class="editor-info-desc">Set precise start and end points with draggable handles or type timestamps in min:sec. Preview the range before exporting.</div>
         </div>
-
         <div class="editor-info-card">
           <div class="editor-info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
-              <path d="M6 2v14a2 2 0 002 2h14"/><path d="M18 22V8a2 2 0 00-2-2H2"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><path d="M6 2v14a2 2 0 002 2h14"/><path d="M18 22V8a2 2 0 00-2-2H2"/></svg>
           </div>
-          <h3 class="editor-info-title">Crop to Any Ratio</h3>
-          <p class="editor-info-desc">Use the interactive crop overlay to drag and resize your frame. Choose from preset aspect ratios — 16:9 for YouTube, 1:1 for Instagram, 9:16 for TikTok &amp; Reels.</p>
+          <div class="editor-info-title">Crop to Any Ratio</div>
+          <div class="editor-info-desc">Interactive crop overlay with 16:9, 1:1, 9:16, 4:3 presets. Perfect for YouTube, Instagram, TikTok &amp; Reels.</div>
         </div>
-
         <div class="editor-info-card">
           <div class="editor-info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </div>
-          <h3 class="editor-info-title">Export as MP4</h3>
-          <p class="editor-info-desc">Choose Low, Medium, or High quality and export a clean H.264 MP4 file with no watermark. Processing happens entirely in your browser — your file never leaves your device.</p>
+          <div class="editor-info-title">Export as MP4</div>
+          <div class="editor-info-desc">Low, Medium, or High quality H.264 MP4 export. No watermark added, no file sent to any server.</div>
         </div>
-
         <div class="editor-info-card">
           <div class="editor-info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
-              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
           </div>
-          <h3 class="editor-info-title">100% Private</h3>
-          <p class="editor-info-desc">No file is ever uploaded to a server. ClipForge uses ffmpeg.wasm — a WebAssembly build of the industry-standard FFmpeg encoder — running entirely inside your browser tab.</p>
+          <div class="editor-info-title">100% Private</div>
+          <div class="editor-info-desc">Powered by ffmpeg.wasm — a WebAssembly encoder running entirely inside your browser. Nothing is uploaded anywhere.</div>
         </div>
-
         <div class="editor-info-card">
           <div class="editor-info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
-          <h3 class="editor-info-title">No File Size Limits</h3>
-          <p class="editor-info-desc">Unlike cloud-based editors that restrict uploads to a few hundred MB, ClipForge handles files as large as your browser's available memory — perfect for long, high-resolution videos.</p>
+          <div class="editor-info-title">No File Size Limits</div>
+          <div class="editor-info-desc">Handle files as large as your device's available memory — ideal for long, high-resolution mobile recordings.</div>
         </div>
-
         <div class="editor-info-card">
           <div class="editor-info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
-          <h3 class="editor-info-title">No Daily Limits</h3>
-          <p class="editor-info-desc">Most free video editors cap you at a few exports per day. ClipForge has zero usage limits — trim and crop as many videos as you want, as often as you want, for free.</p>
+          <div class="editor-info-title">No Daily Limits</div>
+          <div class="editor-info-desc">Export as many videos as you need, as often as you like. No caps, no cooldowns, no subscriptions required.</div>
         </div>
-
       </div>
     </section>
 
@@ -237,15 +269,15 @@
           </div>
           <div class="tool-tabs">
             <button class="tool-tab active" data-tab="trim">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 20L18 4M6 4h.01M18 20h.01M8 12h8"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M6 20L18 4M6 4h.01M18 20h.01M8 12h8"/></svg>
               Trim
             </button>
             <button class="tool-tab" data-tab="crop">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 2v14a2 2 0 002 2h14M18 22V8a2 2 0 00-2-2H2"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M6 2v14a2 2 0 002 2h14M18 22V8a2 2 0 00-2-2H2"/></svg>
               Crop
             </button>
             <button class="tool-tab" data-tab="export">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
               Export
             </button>
           </div>
@@ -254,8 +286,8 @@
           <div class="tab-content active" id="tab-trim">
             <div class="trim-timeline" id="trimTimeline">
               <div class="trim-range" id="trimRange"></div>
-              <div class="trim-thumb trim-thumb-start" id="trimStart" aria-label="Trim start"></div>
-              <div class="trim-thumb trim-thumb-end" id="trimEnd" aria-label="Trim end"></div>
+              <div class="trim-thumb trim-thumb-start" id="trimStart"></div>
+              <div class="trim-thumb trim-thumb-end" id="trimEnd"></div>
               <div class="trim-playhead" id="trimPlayhead"></div>
             </div>
             <div class="field-row">
@@ -277,10 +309,10 @@
             </div>
             <div class="trim-info">
               <span class="trim-info-label">Duration:</span>
-              <span class="trim-info-val" id="trimDuration">0s</span>
+              <span class="trim-info-val" id="trimDuration">0:00</span>
             </div>
             <button class="btn btn-secondary btn-full" id="previewTrimBtn">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M8 5v14l11-7z"/></svg>
               Preview trim range
             </button>
           </div>
@@ -306,24 +338,12 @@
               </div>
               <div class="crop-values">
                 <div class="field-row">
-                  <div class="field">
-                    <label class="field-label">X</label>
-                    <input type="number" class="time-input" id="cropX" value="0" min="0" />
-                  </div>
-                  <div class="field">
-                    <label class="field-label">Y</label>
-                    <input type="number" class="time-input" id="cropY" value="0" min="0" />
-                  </div>
+                  <div class="field"><label class="field-label">X</label><input type="number" class="time-input" id="cropX" value="0" min="0" /></div>
+                  <div class="field"><label class="field-label">Y</label><input type="number" class="time-input" id="cropY" value="0" min="0" /></div>
                 </div>
                 <div class="field-row">
-                  <div class="field">
-                    <label class="field-label">Width</label>
-                    <input type="number" class="time-input" id="cropW" value="0" min="1" />
-                  </div>
-                  <div class="field">
-                    <label class="field-label">Height</label>
-                    <input type="number" class="time-input" id="cropH" value="0" min="1" />
-                  </div>
+                  <div class="field"><label class="field-label">Width</label><input type="number" class="time-input" id="cropW" value="0" min="1" /></div>
+                  <div class="field"><label class="field-label">Height</label><input type="number" class="time-input" id="cropH" value="0" min="1" /></div>
                 </div>
               </div>
               <button class="btn btn-secondary btn-full" id="resetCropBtn">Reset crop</button>
@@ -342,18 +362,9 @@
             <div class="field">
               <label class="field-label">Quality preset</label>
               <div class="quality-grid">
-                <button class="quality-btn" data-quality="low">
-                  <span class="quality-label">Low</span>
-                  <span class="quality-desc">Fast · Small file</span>
-                </button>
-                <button class="quality-btn active" data-quality="medium">
-                  <span class="quality-label">Medium</span>
-                  <span class="quality-desc">Balanced</span>
-                </button>
-                <button class="quality-btn" data-quality="high">
-                  <span class="quality-label">High</span>
-                  <span class="quality-desc">Best quality</span>
-                </button>
+                <button class="quality-btn" data-quality="low"><span class="quality-label">Low</span><span class="quality-desc">Fast · Small</span></button>
+                <button class="quality-btn active" data-quality="medium"><span class="quality-label">Medium</span><span class="quality-desc">Balanced</span></button>
+                <button class="quality-btn" data-quality="high"><span class="quality-label">High</span><span class="quality-desc">Best quality</span></button>
               </div>
             </div>
             <div class="export-summary">
@@ -362,9 +373,7 @@
               <div class="summary-row"><span>Est. time</span><span id="summaryTime">—</span></div>
             </div>
             <button class="btn btn-primary btn-full btn-export" id="exportBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
               Export Video
             </button>
           </div>
@@ -377,53 +386,36 @@
           <span class="panel-title">Exporting…</span>
           <span class="export-pct" id="exportPct">0%</span>
         </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
         <div class="export-log" id="exportLog"></div>
       </div>
 
     </section>
   </div>
 
-  <!-- FFMPEG LOADING OVERLAY -->
+  <!-- FFMPEG OVERLAY -->
   <div class="ffmpeg-overlay hidden" id="ffmpegOverlay">
     <div class="ffmpeg-card">
       <div class="ffmpeg-spinner"></div>
       <div class="ffmpeg-title">Loading ClipForge Engine</div>
       <div class="ffmpeg-sub" id="ffmpegStatus">Initializing ffmpeg.wasm…</div>
-      <div class="ffmpeg-progress-wrap">
-        <div class="ffmpeg-progress" id="ffmpegProgress"></div>
-      </div>
+      <div class="ffmpeg-progress-wrap"><div class="ffmpeg-progress" id="ffmpegProgress"></div></div>
     </div>
   </div>
 
   <script src="/js/sw-register.js"></script>
   <script src="/js/app.js"></script>
   <script>
-    // Report document height to parent so iframe auto-sizes (no fixed 880px)
-    function reportHeight() {
-      const h = document.documentElement.scrollHeight;
-      if (window.parent !== window) {
-        window.parent.postMessage({ type: 'cf-resize', height: h }, '*');
-      }
-    }
-    // Report on load and whenever DOM changes (video loaded, editor opened)
-    window.addEventListener('load', reportHeight);
-    new MutationObserver(reportHeight).observe(document.body, { childList: true, subtree: true, attributes: true });
-
-    // Hide info panel once a video is loaded into the editor
-    const infoPanelEl = document.getElementById('editorInfoPanel');
+    // Hide info panel when video is loaded
+    const infoPanel = document.getElementById('editorInfoPanel');
     document.addEventListener('DOMContentLoaded', () => {
-      const fi = document.getElementById('fileInput');
-      if (fi) fi.addEventListener('change', () => {
-        if (infoPanelEl) infoPanelEl.style.display = 'none';
-        reportHeight();
+      ['fileInput'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', () => {
+          if (infoPanel) infoPanel.style.display = 'none';
+        });
       });
-      const dz = document.getElementById('uploadZone');
-      if (dz) dz.addEventListener('drop', () => {
-        if (infoPanelEl) infoPanelEl.style.display = 'none';
-        reportHeight();
+      document.getElementById('uploadZone')?.addEventListener('drop', () => {
+        if (infoPanel) infoPanel.style.display = 'none';
       });
     });
   </script>
